@@ -15,19 +15,19 @@
 #
 #
 # Phantom imports
-import phantom.app as phantom
-from phantom.base_connector import BaseConnector
-from phantom.action_result import ActionResult
-
-# imports specific to this connector
-from checkpoint_consts import *
-
-import simplejson as json
-import requests
+import re
 import socket
 import struct
 import time
-import re
+
+import phantom.app as phantom
+import requests
+import simplejson as json
+from phantom.action_result import ActionResult
+from phantom.base_connector import BaseConnector
+
+# imports specific to this connector
+from checkpoint_consts import *
 
 
 # Define the App Class
@@ -654,6 +654,7 @@ class CheckpointConnector(BaseConnector):
 if __name__ == '__main__':
 
     import sys
+
     import pudb
     pudb.set_trace()
 

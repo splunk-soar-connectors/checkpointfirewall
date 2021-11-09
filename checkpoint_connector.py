@@ -478,7 +478,8 @@ class CheckpointConnector(BaseConnector):
         if (not ret_val) and (not resp_json):
             return action_result.get_status()
 
-        return action_result.set_status(phantom.APP_SUCCESS, "Successfully blocked {0}".format('subnet' if length != '32' else 'IP'))
+        return action_result.set_status(phantom.APP_SUCCESS,
+            "Successfully blocked {0}".format('subnet' if length != '32' else 'IP'))
 
     def _unblock_ip(self, param):
 
@@ -519,7 +520,8 @@ class CheckpointConnector(BaseConnector):
         if (not ret_val) and (not resp_json):
             return action_result.get_status()
 
-        return action_result.set_status(phantom.APP_SUCCESS, "Successfully unblocked {0}".format('subnet' if length != '32' else 'IP'))
+        return action_result.set_status(phantom.APP_SUCCESS,
+            "Successfully unblocked {0}".format('subnet' if length != '32' else 'IP'))
 
     def _list_hosts(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))

@@ -15,19 +15,19 @@
 #
 #
 # Phantom imports
-import phantom.app as phantom
-from phantom.base_connector import BaseConnector
-from phantom.action_result import ActionResult
-
-# imports specific to this connector
-from checkpoint_consts import *
-
-import simplejson as json
-import requests
+import re
 import socket
 import struct
 import time
-import re
+
+import phantom.app as phantom
+import requests
+import simplejson as json
+from phantom.action_result import ActionResult
+from phantom.base_connector import BaseConnector
+
+# imports specific to this connector
+from checkpoint_consts import *
 
 
 # Define the App Class
@@ -69,6 +69,12 @@ class CheckpointConnector(BaseConnector):
 
         return phantom.APP_SUCCESS
 
+    def finalize(self):
+        if self.get_status():
+            self._logout(self)
+        else:
+            self._discard_session(self)
+
     def _get_net_size(self, net_mask):
 
         net_mask = net_mask.split('.')
@@ -93,10 +99,10 @@ class CheckpointConnector(BaseConnector):
         net_size = None
         net_mask = None
 
-        if ('/' in ip_addr):
+        if '/' in ip_addr:
             ip, net_size = ip_addr.split('/')
             net_mask = self._get_net_mask(net_size)
-        elif(' ' in ip_addr):
+        elif ' ' in ip_addr:
             ip, net_mask = ip_addr.split()
             net_size = self._get_net_size(net_mask)
         else:
@@ -135,7 +141,7 @@ class CheckpointConnector(BaseConnector):
                 self.debug_print("net_size: {0} invalid int".format(net_size))
                 return False
 
-            if (not (0 < net_size <= 32)):
+            if not (0 < net_size <= 32):
                 return False
 
         return True
@@ -174,7 +180,7 @@ class CheckpointConnector(BaseConnector):
 
     def _login(self, action_result):
 
-        if (self._sid is not None):
+        if self._sid is not None:
             # sid already created for this call
             return phantom.APP_SUCCESS
 
@@ -192,7 +198,7 @@ class CheckpointConnector(BaseConnector):
 
         ret_val, resp_json = self._make_rest_call('login', data, action_result)
 
-        if (not ret_val):
+        if not ret_val:
             return action_result.get_status()
 
         self._sid = resp_json.get('sid')
@@ -203,7 +209,7 @@ class CheckpointConnector(BaseConnector):
 
     def _logout(self, action_result):
 
-        if (self._sid is None):
+        if self._sid is None:
             # logout already called, sid is null
             return phantom.APP_SUCCESS
 
@@ -245,7 +251,7 @@ class CheckpointConnector(BaseConnector):
 
         ret_val, resp_json = self._make_rest_call('publish', {}, action_result)
 
-        if ((not ret_val) and (not resp_json)):
+        if (not ret_val) and (not resp_json):
             return action_result.get_status()
 
         task_id = resp_json.get('task-id')
@@ -261,23 +267,32 @@ class CheckpointConnector(BaseConnector):
 
             ret_val, resp_json = self._make_rest_call('show-task', {'task-id': task_id}, action_result)
 
-            if ((not ret_val) and (not resp_json)):
+            if (not ret_val) and (not resp_json):
                 continue
 
-            if (resp_json.get('tasks', [{}])[0].get('status') == 'succeeded'):
+            if resp_json.get('tasks', [{}])[0].get('status') == 'succeeded':
                 return True
+
+    def _discard_session(self, action_result):
+
+        ret_val, resp_json = self._make_rest_call('discard', {}, action_result)
+
+        if (not ret_val) and (not resp_json):
+            return action_result.get_status()
+
+        self._logout(self)
 
     def _check_for_object(self, name, ip, length, action_result):
 
         endpoint = 'show-hosts'
-        if (length != '32'):
+        if length != '32':
             endpoint = 'show-networks'
 
         body = {"details-level": "full"}
 
         ret_val, resp_json = self._make_rest_call(endpoint, body, action_result)
 
-        if (not ret_val):
+        if not ret_val:
             return None
 
         found_name = False
@@ -288,19 +303,19 @@ class CheckpointConnector(BaseConnector):
                 found_name = True
                 break
 
-            if (length == '32'):
-                if (ip == net_obj.get('ipv4-address')):
+            if length == '32':
+                if ip == net_obj.get('ipv4-address'):
                     found_object = True
                     name = net_obj.get('name')
                     break
 
             else:
-                if ((ip == net_obj.get('subnet4')) and (length == net_obj.get('mask-length4'))):
+                if (ip == net_obj.get('subnet4')) and (length == net_obj.get('mask-length4')):
                     found_object = True
                     name = net_obj.get('name')
                     break
 
-        if ((found_name) or (found_object)):
+        if found_name or found_object:
             return name
 
         return ""
@@ -313,7 +328,7 @@ class CheckpointConnector(BaseConnector):
 
         ret_val, resp_json = self._make_rest_call(endpoint, body, action_result)
 
-        if (not ret_val):
+        if not ret_val:
             return None
 
         for rule in resp_json.get('rulebase'):
@@ -330,11 +345,9 @@ class CheckpointConnector(BaseConnector):
 
         status = self._login(self)
 
-        if (phantom.is_fail(status)):
+        if phantom.is_fail(status):
             self.append_to_message(CHECKPOINT_ERR_CONNECTIVITY_TEST)
             return self.get_status()
-
-        self._logout(self)
 
         return self.set_status_save_progress(phantom.APP_SUCCESS, CHECKPOINT_SUCC_CONNECTIVITY_TEST)
 
@@ -349,7 +362,7 @@ class CheckpointConnector(BaseConnector):
 
         ret_val, resp_json = self._make_rest_call(endpoint, {}, action_result)
 
-        if (not ret_val):
+        if not ret_val:
             return action_result.get_status()
 
         policy_list = []
@@ -360,15 +373,12 @@ class CheckpointConnector(BaseConnector):
 
         num_policies = len(policy_list)
 
-        if (num_policies):
+        if num_policies:
             message = "Successfully found {0} polic{1}".format(num_policies, 'y' if num_policies == 1 else 'ies')
             action_result.add_data(resp_json)
 
         else:
             message = "Found no policies"
-
-        # logout of session
-        self._logout(self)
 
         return action_result.set_status(phantom.APP_SUCCESS, message)
 
@@ -383,7 +393,7 @@ class CheckpointConnector(BaseConnector):
 
         ret_val, resp_json = self._make_rest_call(endpoint, {}, action_result)
 
-        if (not ret_val):
+        if not ret_val:
             return action_result.get_status()
 
         layer_list = []
@@ -394,15 +404,12 @@ class CheckpointConnector(BaseConnector):
 
         num_layers = len(layer_list)
 
-        if (num_layers):
+        if num_layers:
             message = "Successfully found {0} layer{1}".format(num_layers, '' if num_layers == 1 else 's')
             action_result.add_data(resp_json)
 
         else:
             message = "Found no layers"
-
-        # logout of session
-        self._logout(self)
 
         return action_result.set_status(phantom.APP_SUCCESS, message)
 
@@ -422,20 +429,19 @@ class CheckpointConnector(BaseConnector):
 
         new_name = self._check_for_object(object_name, ip, length, action_result)
 
-        if (new_name is None):
+        if new_name is None:
             return action_result.get_status()
 
-        if (new_name != ""):
+        if new_name != "":
             object_name = new_name
 
         else:
-
             body = {'name': object_name}
 
             endpoint = 'add-host'
             json_field = 'ip-address'
 
-            if (length != '32'):
+            if length != '32':
                 endpoint = 'add-network'
                 json_field = 'subnet'
                 body['mask-length'] = length
@@ -444,38 +450,36 @@ class CheckpointConnector(BaseConnector):
 
             ret_val, resp_json = self._make_rest_call(endpoint, body, action_result)
 
-            if ((not ret_val) and (not resp_json)):
+            if (not ret_val) and (not resp_json):
                 return action_result.get_status()
 
         ret_val = self._check_for_rule(object_name, layer, action_result)
 
-        if (ret_val is None):
+        if ret_val is None:
             return action_result.get_status()
 
-        if (ret_val):
+        if ret_val:
             return action_result.set_status(phantom.APP_SUCCESS, "IP already blocked. Taking no action.")
 
         body = {'position': 'top', 'layer': layer, 'action': 'Drop', 'destination': object_name, 'name': object_name}
 
         ret_val, resp_json = self._make_rest_call('add-access-rule', body, action_result)
 
-        if ((not ret_val) and (not resp_json)):
+        if (not ret_val) and (not resp_json):
             return action_result.get_status()
 
         action_result.add_data(resp_json)
 
-        if (not self._publish_and_wait(action_result)):
+        if not self._publish_and_wait(action_result):
             return action_result.set_status(phantom.APP_ERROR, "Could not publish session after changes")
 
         ret_val, resp_json = self._make_rest_call('install-policy', {'policy-package': policy}, action_result)
 
-        if ((not ret_val) and (not resp_json)):
+        if (not ret_val) and (not resp_json):
             return action_result.get_status()
 
-        # logout of session
-        self._logout(self)
-
-        return action_result.set_status(phantom.APP_SUCCESS, "Successfully blocked {0}".format('subnet' if length != '32' else 'IP'))
+        return action_result.set_status(phantom.APP_SUCCESS,
+            "Successfully blocked {0}".format('subnet' if length != '32' else 'IP'))
 
     def _unblock_ip(self, param):
 
@@ -493,33 +497,31 @@ class CheckpointConnector(BaseConnector):
 
         ret_val = self._check_for_rule(object_name, layer, action_result)
 
-        if (ret_val is None):
+        if ret_val is None:
             return action_result.get_status()
 
-        if (not ret_val):
+        if not ret_val:
             return action_result.set_status(phantom.APP_SUCCESS, "IP not blocked. Taking no action.")
 
         body = {'layer': layer, 'name': object_name}
 
         ret_val, resp_json = self._make_rest_call('delete-access-rule', body, action_result)
 
-        if ((not ret_val) and (not resp_json)):
+        if (not ret_val) and (not resp_json):
             return action_result.get_status()
 
         action_result.add_data(resp_json)
 
-        if (not self._publish_and_wait(action_result)):
+        if not self._publish_and_wait(action_result):
             return action_result.set_status(phantom.APP_ERROR, "Could not publish session after changes")
 
         ret_val, resp_json = self._make_rest_call('install-policy', {'policy-package': policy}, action_result)
 
-        if ((not ret_val) and (not resp_json)):
+        if (not ret_val) and (not resp_json):
             return action_result.get_status()
 
-        # logout of session
-        self._logout(self)
-
-        return action_result.set_status(phantom.APP_SUCCESS, "Successfully unblocked {0}".format('subnet' if length != '32' else 'IP'))
+        return action_result.set_status(phantom.APP_SUCCESS,
+            "Successfully unblocked {0}".format('subnet' if length != '32' else 'IP'))
 
     def _list_hosts(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))
@@ -531,7 +533,7 @@ class CheckpointConnector(BaseConnector):
 
         ret_val, resp_json = self._make_rest_call(endpoint, {}, action_result)
 
-        if ((not ret_val) and (not resp_json)):
+        if (not ret_val) and (not resp_json):
             return action_result.get_status()
 
         action_result.add_data(resp_json)
@@ -544,8 +546,6 @@ class CheckpointConnector(BaseConnector):
             message = "Succesfully found {0} host{1}".format(total_num_hosts, '' if total_num_hosts == 1 else 's')
         else:
             message = "Found no hosts"
-
-        self._logout(self)
 
         return action_result.set_status(phantom.APP_SUCCESS, message)
 
@@ -584,12 +584,10 @@ class CheckpointConnector(BaseConnector):
 
         action_result.add_data(resp_json)
 
-        if (not self._publish_and_wait(action_result)):
+        if not self._publish_and_wait(action_result):
             return action_result.set_status(phantom.APP_ERROR, "Could not publish session after changes")
 
         message = "Successfully added host"
-
-        self._logout(self)
 
         return action_result.set_status(phantom.APP_SUCCESS, message)
 
@@ -616,12 +614,10 @@ class CheckpointConnector(BaseConnector):
 
         action_result.add_data(resp_json)
 
-        if (not self._publish_and_wait(action_result)):
+        if not self._publish_and_wait(action_result):
             return action_result.set_status(phantom.APP_ERROR, "Could not publish session after changes")
 
         message = "Successfully deleted host"
-
-        self._logout(self)
 
         return action_result.set_status(phantom.APP_SUCCESS, message)
 
@@ -633,23 +629,23 @@ class CheckpointConnector(BaseConnector):
 
         self._param = param
 
-        if (action_id == self.ACTION_ID_TEST_CONNECTIVITY):
+        if action_id == self.ACTION_ID_TEST_CONNECTIVITY:
             result = self._test_connectivity(param)
-        elif (action_id == self.ACTION_ID_BLOCK_IP):
+        elif action_id == self.ACTION_ID_BLOCK_IP:
             result = self._block_ip(param)
-        elif (action_id == self.ACTION_ID_UNBLOCK_IP):
+        elif action_id == self.ACTION_ID_UNBLOCK_IP:
             result = self._unblock_ip(param)
-        elif (action_id == self.ACTION_ID_LIST_LAYERS):
+        elif action_id == self.ACTION_ID_LIST_LAYERS:
             result = self._list_layers(param)
-        elif (action_id == self.ACTION_ID_LIST_POLICIES):
+        elif action_id == self.ACTION_ID_LIST_POLICIES:
             result = self._list_policies(param)
-        elif (action_id == self.ACTION_ID_LOGOUT_SESSION):
+        elif action_id == self.ACTION_ID_LOGOUT_SESSION:
             result = self._logout_session(param)
-        elif (action_id == self.ACTION_ID_DELETE_HOST):
+        elif action_id == self.ACTION_ID_DELETE_HOST:
             result = self._delete_host(param)
-        elif (action_id == self.ACTION_ID_LIST_HOSTS):
+        elif action_id == self.ACTION_ID_LIST_HOSTS:
             result = self._list_hosts(param)
-        elif (action_id == self.ACTION_ID_ADD_HOST):
+        elif action_id == self.ACTION_ID_ADD_HOST:
             result = self._add_host(param)
 
         return result
@@ -658,6 +654,7 @@ class CheckpointConnector(BaseConnector):
 if __name__ == '__main__':
 
     import sys
+
     # import pudb
     # pudb.set_trace()
 

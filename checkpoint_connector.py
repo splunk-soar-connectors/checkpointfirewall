@@ -655,8 +655,8 @@ if __name__ == '__main__':
 
     import sys
 
-    import pudb
-    pudb.set_trace()
+    # import pudb
+    # pudb.set_trace()
 
     if (len(sys.argv) < 2):
         print("No test json specified as input")

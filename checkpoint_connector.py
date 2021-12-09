@@ -34,10 +34,6 @@ from checkpoint_consts import *
 class CheckpointConnector(BaseConnector):
 
     # The actions supported by this connector
-    ACTION_ID_LOGOUT_SESSION = "logout_session"
-    ACTION_ID_DELETE_HOST = "delete_host"
-    ACTION_ID_LIST_HOSTS = "list_hosts"
-    ACTION_ID_ADD_HOST = "add_host"
     ACTION_ID_BLOCK_IP = "block_ip"
     ACTION_ID_UNBLOCK_IP = "unblock_ip"
     ACTION_ID_LIST_LAYERS = "list_layers"
@@ -217,32 +213,11 @@ class CheckpointConnector(BaseConnector):
 
         if phantom.is_fail(ret_val):
             self.save_progress("Failed to logout: {}".format(action_result.get_status_message()))
-            return action_result.get_status(), action_result.get_status_message()
+            return action_result.get_status()
 
         self._sid = None
 
-        return phantom.APP_SUCCESS, "Successfully logged out of session"
-
-    def _logout_session(self, param):
-
-        action_result = self.add_action_result(ActionResult(dict(param)))
-
-        if not(self._login(action_result)):
-            return action_result.get_status()
-
-        sid_existing_session = param['session_id']
-        sid_auth = self._sid
-
-        self._headers['X-chkp-sid'] = sid_existing_session
-
-        ret_val, msg = self._logout(self)
-
-        self._sid = sid_auth
-        self._headers['X-chkp-sid'] = sid_auth
-
-        self._logout(self)
-
-        return action_result.set_status(phantom.APP_SUCCESS if ret_val else phantom.APP_ERROR, msg)
+        return phantom.APP_SUCCESS
 
     def _publish_and_wait(self, action_result):
 
@@ -347,6 +322,7 @@ class CheckpointConnector(BaseConnector):
 
         if phantom.is_fail(status):
             self.append_to_message(CHECKPOINT_ERR_CONNECTIVITY_TEST)
+            self._logout(self)
             return self.get_status()
 
         return self.set_status_save_progress(phantom.APP_SUCCESS, CHECKPOINT_SUCC_CONNECTIVITY_TEST)

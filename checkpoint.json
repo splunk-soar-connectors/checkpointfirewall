@@ -16,6 +16,7 @@
     "logo": "logo_checkpoint.svg",
     "logo_dark": "logo_checkpoint_dark.svg",
     "python_version": "3",
+    "fips_compliant":true,
     "configuration": {
         "url": {
             "description": "Management Server URL with port (e.g. https://10.10.10.10:443)",

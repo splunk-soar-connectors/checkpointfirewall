@@ -2,11 +2,11 @@
 # Check Point Firewall
 
 Publisher: Splunk  
-Connector Version: 2\.0\.2  
+Connector Version: 2\.1\.1  
 Product Vendor: Check Point Software Technologies  
 Product Name: Check Point Firewall  
 Product Version Supported (regex): "\.\*"  
-Minimum Product Version: 4\.10\.0\.40961  
+Minimum Product Version: 5\.0\.0
 
 This app supports a variety of endpoint and network based containment actions on Check Point Firewall
 

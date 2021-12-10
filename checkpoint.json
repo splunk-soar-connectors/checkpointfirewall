@@ -7,7 +7,7 @@
     "type": "firewall",
     "license": "Copyright (c) 2017-2021 Splunk Inc.",
     "main_module": "checkpoint_connector.py",
-    "app_version": "2.0.4",
+    "app_version": "2.1.0",
     "utctime_updated": "2021-12-09T01:03:14.000000Z",
     "product_vendor": "Check Point Software Technologies",
     "product_name": "Check Point Firewall",
@@ -1163,7 +1163,7 @@
         },
         {
             "action": "delete host",
-            "description": "Delete host ",
+            "description": "Delete host",
             "verbose": "To delete a host, either specify <b>uid</b> or <b>name</b>. If provided both, this action will prioritize the <b>uid</b> parameter.",
             "type": "correct",
             "identifier": "delete_host",

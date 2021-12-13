@@ -2,11 +2,11 @@
 # Check Point Firewall
 
 Publisher: Splunk  
-Connector Version: 2\.0\.2  
+Connector Version: 2\.1\.2  
 Product Vendor: Check Point Software Technologies  
 Product Name: Check Point Firewall  
 Product Version Supported (regex): "\.\*"  
-Minimum Product Version: 4\.10\.0\.40961  
+Minimum Product Version: 5\.0\.0  
 
 This app supports a variety of endpoint and network based containment actions on Check Point Firewall
 
@@ -29,7 +29,7 @@ VARIABLE | REQUIRED | TYPE | DESCRIPTION
 [unblock ip](#action-unblock-ip) - Unblock an IP/subnet   
 [list hosts](#action-list-hosts) - List hosts  
 [add host](#action-add-host) - Add host   
-[delete host](#action-delete-host) - Delete host   
+[delete host](#action-delete-host) - Delete host  
 [logout session](#action-logout-session) - Logout of an exisiting session  
 
 ## action: 'test connectivity'
@@ -309,7 +309,7 @@ action\_result\.parameter\.ip | string |  `ip`  `ipv6`
 action\_result\.parameter\.ipv4 | string |  `ip`   
 
 ## action: 'delete host'
-Delete host 
+Delete host
 
 Type: **correct**  
 Read only: **False**

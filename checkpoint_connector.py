@@ -50,7 +50,6 @@ class CheckpointConnector(BaseConnector):
         super(CheckpointConnector, self).__init__()
 
         self._base_url = None
-        self._sid = None
         self._headers = None
         self._state = None
 
@@ -211,7 +210,6 @@ class CheckpointConnector(BaseConnector):
             return action_result.get_status()
 
         self._state['sid'] = resp_json.get('sid')
-        # self._state['uid'] = resp_json.get('uid')
 
         self._headers['X-chkp-sid'] = self._state.get('sid')
 
@@ -236,14 +234,13 @@ class CheckpointConnector(BaseConnector):
         if not(self._set_auth_sid(action_result)):
             return action_result.get_status()
 
-        sid_existing_session = param.get('session_id', self._state['sid'])
-        sid_auth = self._state.get('sid')
+        sid_to_logout = param.get('session_id', self._state.get('sid'))
 
-        self._headers['X-chkp-sid'] = sid_existing_session
+        self._headers['X-chkp-sid'] = sid_to_logout
 
         ret_val, msg = self._logout(self)
 
-        self._headers['X-chkp-sid'] = sid_auth
+        self._headers['X-chkp-sid'] = self._state.get('sid')
 
         return action_result.set_status(phantom.APP_SUCCESS if ret_val else phantom.APP_ERROR, msg)
 

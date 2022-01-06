@@ -1259,7 +1259,7 @@
             "parameters": {
                 "session_id": {
                     "description": "Session id to log out from",
-                    "data_type": "string",
+                    "data_type": "password",
                     "primary": true,
                     "required": true,
                     "order": 0

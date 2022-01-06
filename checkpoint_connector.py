@@ -74,10 +74,6 @@ class CheckpointConnector(BaseConnector):
     def finalize(self):
         self.save_state(self._state)
         return phantom.APP_SUCCESS
-    #     if self.get_status():
-    #         self._logout(self)
-    #     else:
-    #         self._discard_session(self)
 
     def _get_net_size(self, net_mask):
 
@@ -184,34 +180,18 @@ class CheckpointConnector(BaseConnector):
 
     def _set_auth_sid(self, action_result):
         if not self._state.get('sid'):
-            auth_status = self._login(action_result) # TODO: finish writing login() function, in this function it might be better to update state there
+            auth_status = self._login(action_result)
         else:
             self._headers['X-chkp-sid'] = self._state.get('sid')
             ret_val, resp_json = self._make_rest_call('show-session', {}, action_result)
             if ret_val is False:
-                # uid_to_discard = self._state.get('uid')
                 auth_status = self._login(action_result)
-                # self._discard_session(session_to_discard=uid_to_discard) #discard expired session and logout
             else:
                 auth_status, resp_json = self._make_rest_call('keepalive', {}, action_result)
 
         return auth_status
 
     def _login(self, action_result):
-        # LOGIN:
-        # If self._state[sid] is None:
-        #     made login api call using user and pass
-        #     set self._state[sid] = sid returned from login call
-        # Else:
-        #     try using self._state[sid] to make rest api call —> /web_api/show-session:
-        #         if api call response.expired-session == False:
-        #             discard expired session and logout
-        #             login api call using user and password
-        #             set self._state[sid] = sid returned from login call
-        #         else:
-        #             use self._state[sid] as x-chkp-sid in header and continue
-
-        # self.save_state(self._state)
 
         config = self.get_config()
 
@@ -241,10 +221,6 @@ class CheckpointConnector(BaseConnector):
 
     def _logout(self, action_result):
 
-        # if self._state.get('sid') is None:
-        #     # logout already called, sid is null
-        #     return phantom.APP_SUCCESS
-
         ret_val, resp_json = self._make_rest_call('logout', {}, action_result)
 
         if phantom.is_fail(ret_val):
@@ -260,17 +236,14 @@ class CheckpointConnector(BaseConnector):
         if not(self._set_auth_sid(action_result)):
             return action_result.get_status()
 
-        sid_existing_session = param['session_id']
+        sid_existing_session = param.get('session_id', self._state['sid'])
         sid_auth = self._state.get('sid')
 
         self._headers['X-chkp-sid'] = sid_existing_session
 
         ret_val, msg = self._logout(self)
 
-        # self._state['sid'] = sid_auth
         self._headers['X-chkp-sid'] = sid_auth
-
-        # self._logout(self)
 
         return action_result.set_status(phantom.APP_SUCCESS if ret_val else phantom.APP_ERROR, msg)
 
@@ -302,20 +275,6 @@ class CheckpointConnector(BaseConnector):
 
             if resp_json.get('tasks', [{}])[0].get('status') == 'succeeded':
                 return True
-
-    # def _discard_session(self, action_result, session_to_discard=None):
-
-    #     data = {}
-    #     if session_to_discard is not None:
-    #         data["uid"] = session_to_discard
-
-    #     ret_val, resp_json = self._make_rest_call('discard', data, action_result)
-
-    #     if (not ret_val) and (not resp_json):
-    #         return action_result.get_status()
-
-    #     param = { "session_id" : self._state.get("uid")}
-    #     self._logout_session(self)
 
     def _check_for_object(self, name, ip, length, action_result):
 

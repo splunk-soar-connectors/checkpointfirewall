@@ -5,7 +5,7 @@
     "publisher": "Splunk",
     "package_name": "phantom_checkpoint",
     "type": "firewall",
-    "license": "Copyright (c) 2017-2021 Splunk Inc.",
+    "license": "Copyright (c) 2017-2018, 2021-2022 Splunk Inc.",
     "main_module": "checkpoint_connector.py",
     "app_version": "2.1.2",
     "utctime_updated": "2021-12-10T22:06:29.000000Z",

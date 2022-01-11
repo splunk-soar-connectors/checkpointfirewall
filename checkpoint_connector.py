@@ -1,6 +1,6 @@
 # File: checkpoint_connector.py
 #
-# Copyright (c) 2017-2018, 2021-2022 Splunk Inc.
+# Copyright (c) 2017-2022 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -646,8 +646,8 @@ if __name__ == '__main__':
 
     import sys
 
-    import pudb
-    pudb.set_trace()
+    # import pudb
+    # pudb.set_trace()
 
     if (len(sys.argv) < 2):
         print("No test json specified as input")

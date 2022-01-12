@@ -1261,7 +1261,6 @@
                     "description": "Session ID to log out from",
                     "data_type": "string",
                     "primary": true,
-                    "required": false,
                     "order": 0
                 }
             },

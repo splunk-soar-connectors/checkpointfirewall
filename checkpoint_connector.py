@@ -183,7 +183,7 @@ class CheckpointConnector(BaseConnector):
         else:
             self._headers['X-chkp-sid'] = self._state.get('sid')
             ret_val, resp_json = self._make_rest_call('show-session', {}, action_result)
-            if ret_val is False:
+            if not ret_val:
                 auth_status = self._login(action_result)
             else:
                 auth_status, resp_json = self._make_rest_call('keepalive', {}, action_result)

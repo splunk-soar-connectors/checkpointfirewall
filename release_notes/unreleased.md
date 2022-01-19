@@ -1,2 +1,2 @@
 **Unreleased**
-* Fixed the multiple login requests issue [PAPP-23430]
+* Fixed issue where multiple logins were being requested [PAPP-23430]

@@ -2,7 +2,7 @@
 # Check Point Firewall
 
 Publisher: Splunk  
-Connector Version: 2\.1\.2  
+Connector Version: 2\.1\.4  
 Product Vendor: Check Point Software Technologies  
 Product Name: Check Point Firewall  
 Product Version Supported (regex): "\.\*"  
@@ -30,7 +30,7 @@ VARIABLE | REQUIRED | TYPE | DESCRIPTION
 [list hosts](#action-list-hosts) - List hosts  
 [add host](#action-add-host) - Add host   
 [delete host](#action-delete-host) - Delete host  
-[logout session](#action-logout-session) - Logout of an exisiting session  
+[logout session](#action-logout-session) - Logout of an existing session  
 
 ## action: 'test connectivity'
 Validate the asset configuration for connectivity
@@ -334,17 +334,17 @@ summary\.total\_objects\_successful | numeric |
 action\_result\.parameter\.name | string |   
 
 ## action: 'logout session'
-Logout of an exisiting session
+Logout of an existing session
 
 Type: **correct**  
 Read only: **False**
 
-This action logs out of an existing session\. For all other actions, logging out occurs automatically\.
+This action logs out of the current session unless another session ID is specified\.
 
 #### Action Parameters
 PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 --------- | -------- | ----------- | ---- | --------
-**session\_id** |  required  | Session id to log out from | string | 
+**session\_id** |  optional  | Session ID to log out from | string | 
 
 #### Action Output
 DATA PATH | TYPE | CONTAINS

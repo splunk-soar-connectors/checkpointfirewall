@@ -42,6 +42,10 @@ class CheckpointConnector(BaseConnector):
     ACTION_ID_UNBLOCK_IP = "unblock_ip"
     ACTION_ID_LIST_LAYERS = "list_layers"
     ACTION_ID_LIST_POLICIES = "list_policies"
+    ACTION_ID_ADD_NETWORK = "add_network"
+    ACTION_ID_UPDATE_GROUP_MEMBERS = "update_group_members"
+    ACTION_ID_ADD_USER = "add_user"
+
     ACTION_ID_TEST_CONNECTIVITY = "test_connectivity"
 
     def __init__(self):
@@ -415,6 +419,8 @@ class CheckpointConnector(BaseConnector):
 
         layer = param.get('layer')
         policy = param.get('policy')
+        skip_install_policy = param["skip_install_policy"]
+        object_name_param = param.get("object_name")
 
         object_name = 'phantom - {0}/{1}'.format(ip, length)
 
@@ -425,6 +431,9 @@ class CheckpointConnector(BaseConnector):
 
         if new_name != "":
             object_name = new_name
+
+        if object_name_param:
+            object_name = object_name_param
 
         else:
             body = {'name': object_name}
@@ -464,10 +473,11 @@ class CheckpointConnector(BaseConnector):
         if not self._publish_and_wait(action_result):
             return action_result.set_status(phantom.APP_ERROR, "Could not publish session after changes")
 
-        ret_val, resp_json = self._make_rest_call('install-policy', {'policy-package': policy}, action_result)
+        if not skip_install_policy:
+            ret_val, resp_json = self._make_rest_call('install-policy', {'policy-package': policy}, action_result)
 
-        if (not ret_val) and (not resp_json):
-            return action_result.get_status()
+            if (not ret_val) and (not resp_json):
+                return action_result.get_status()
 
         return action_result.set_status(phantom.APP_SUCCESS,
             "Successfully blocked {0}".format('subnet' if length != '32' else 'IP'))
@@ -551,10 +561,19 @@ class CheckpointConnector(BaseConnector):
         ipv4 = param.get('ipv4')
         ipv6 = param.get('ipv6')
         name = param['name']
+        comments = param.get("comments")
+        groups = param.get("groups")
 
         endpoint = 'add-host'
 
         body = {'name': name}
+        
+        if comments:
+            body["comments"] = comments
+
+        if groups:
+            groups_list = groups.split(",")
+            body["groups"] = groups_list
 
         if ip:
             body['ip-address'] = ip
@@ -612,6 +631,180 @@ class CheckpointConnector(BaseConnector):
 
         return action_result.set_status(phantom.APP_SUCCESS, message)
 
+    def _update_group_members(self, param):
+        action_result = self.add_action_result(ActionResult(dict(param)))
+
+        if not(self._set_auth_sid(action_result)):
+            return action_result.get_status()
+
+        name = param.get('name')
+        uid = param.get('uid')
+        members = param["members"]
+        action = param["action"]
+
+        members = members.split(",")
+
+        members_object = {action: members} if action in ['add', 'remove'] else members
+        members_payload = {'members': members_object}
+
+        endpoint = 'set-group'
+
+        if uid:
+            ret_val, resp_json = self._make_rest_call(endpoint, {**members_payload, 'uid': uid}, action_result)
+        elif name:
+            ret_val, resp_json = self._make_rest_call(endpoint, {**members_payload, 'name': name}, action_result)
+        else:
+            return action_result.set_status(phantom.APP_ERROR, "You must specify the host name or unique identifier")
+
+        if (not ret_val) and (not resp_json):
+            return action_result.get_status()
+
+        action_result.add_data(resp_json)
+
+        if not self._publish_and_wait(action_result):
+            return action_result.set_status(phantom.APP_ERROR, "Could not publish session after changes")
+
+        message = "Successfully updated group"
+
+        return action_result.set_status(phantom.APP_SUCCESS, message)
+
+    def _add_network(self, param):
+        action_result = self.add_action_result(ActionResult(dict(param)))
+
+        if not(self._set_auth_sid(action_result)):
+            return action_result.get_status()
+
+        name = param['name']
+
+        subnet = param.get('subnet')
+        subnet_v4 = param.get('subnet_v4')
+        subnet_v6 = param.get('subnet_v6')
+
+        subnet_mask_length = param.get("subnet_mask_length")
+        subnet_mask_length_v4 = param.get('subnet_mask_length_v4')
+        subnet_mask_length_v6 = param.get('subnet_mask_length_v6')
+
+        subnet_mask = param.get('subnet_mask')
+        comments = param.get("comments")
+        groups = param.get("groups")
+
+        endpoint = 'add-network'
+
+        body = {'name': name}
+
+        if comments:
+            body['comments'] = comments
+        
+        if groups:
+            body['groups'] = groups.split(",")
+
+        if subnet:
+            body['subnet'] = subnet
+        elif subnet_v4 and subnet_v6:
+            body['subnet4'] = subnet_v4
+            body['subnet6'] = subnet_v6
+        elif subnet_v4:
+            body['subnet4'] = subnet_v4
+        elif subnet_v6:
+            body['subnet6'] = subnet_v6
+        else:
+            return action_result.set_status(phantom.APP_ERROR, "You must specify a subnet")
+
+        if subnet_mask_length:
+            body['mask-length'] = subnet_mask_length
+        elif subnet_mask_length_v4 and subnet_mask_length_v6:
+            body['mask-length4'] = subnet_mask_length_v4
+            body['mask-length6'] = subnet_mask_length_v6
+        elif subnet_mask_length_v4:
+            body['mask-length4'] = subnet_mask_length_v4
+        elif subnet_mask_length_v6:
+            body['mask-length6'] = subnet_mask_length_v6
+        elif subnet_mask:
+            body['subnet-mask'] = subnet_mask
+        else:
+            return action_result.set_status(phantom.APP_ERROR, "You must specify a subnet mask length or subnet mask")
+
+        ret_val, resp_json = self._make_rest_call(endpoint, body, action_result)
+
+        if (not ret_val) and (not resp_json):
+            return action_result.get_status()
+
+        action_result.add_data(resp_json)
+
+        if not self._publish_and_wait(action_result):
+            return action_result.set_status(phantom.APP_ERROR, "Could not publish session after changes")
+
+        message = "Successfully added network"
+
+        return action_result.set_status(phantom.APP_SUCCESS, message)
+
+    def _install_policy(self, param):
+        action_result = self.add_action_result(ActionResult(dict(param)))
+
+        if not(self._set_auth_sid(action_result)):
+            return action_result.get_status()
+
+        policy = param['policy']
+        targets = param['targets'].split(",")
+        access = param.get("access")
+
+        body = {
+            "policy-package": policy,
+            "targets": targets
+        }
+
+        endpoint = "install-policy"
+
+        if access:
+            body["access"] = access
+
+        ret_val, resp_json = self._make_rest_call(endpoint, body, action_result)
+
+        action_result.add_data(resp_json)
+
+        if (not ret_val) and (not resp_json):
+            return action_result.get_status()
+
+        message = "Successfully submitted policy installation"
+
+        return action_result.set_status(phantom.APP_SUCCESS, message)
+
+    def _add_user(self, param):
+        action_result = self.add_action_result(ActionResult(dict(param)))
+
+        if not(self._set_auth_sid(action_result)):
+            return action_result.get_status()
+
+        name = param['name']
+        template = param['template']
+        email = param.get('email')
+        phone_number = param.get('phone_number')
+        comments = param.get('comments')
+
+        endpoint = "add-user"
+
+        body = {
+            "name": name,
+            "template": template
+        }
+
+        if email:
+            body["email"] = email
+        if phone_number:
+            body["phone_number"] = phone_number
+        if comments:
+            body["comments"] = comments
+
+        ret_val, resp_json = self._make_rest_call(endpoint, body, action_result)
+
+        action_result.add_data(resp_json)
+
+        if (not ret_val) and (not resp_json):
+            return action_result.get_status()
+
+        message = "Successfully created user"
+        return action_result.set_status(phantom.APP_SUCCESS, message)
+
     def handle_action(self, param):
 
         # Get the action that we are supposed to execute for this App Run
@@ -638,6 +831,14 @@ class CheckpointConnector(BaseConnector):
             result = self._list_hosts(param)
         elif action_id == self.ACTION_ID_ADD_HOST:
             result = self._add_host(param)
+        elif action_id == self.ACTION_ID_ADD_NETWORK:
+            result = self._add_network(param)
+        elif action_id == self.ACTION_ID_INSTALL_POLICY:
+            result = self._install_policy(param)
+        elif action_id == self.ACTION_ID_ADD_USER:
+            result = self._add_user(param)
+        elif action_id == self.ACTION_ID_UPDATE_GROUP_MEMBERS:
+            result = self._update_group_members(param)
 
         return result
 

@@ -12,11 +12,13 @@
 # the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
 # either express or implied. See the License for the specific language governing permissions
 # and limitations under the License.
-CHECKPOINT_ERR_DEVICE_CONNECTIVITY = "Could not connect to Check Point:\n{0}"
-CHECKPOINT_ERR_DEVICE_CONNECTIVITY_NOFORMAT = "Could not connect to Check Point"
-CHECKPOINT_ERR_CONNECTIVITY_TEST = "Connectivity test failed"
-CHECKPOINT_SUCC_CONNECTIVITY_TEST = "Connectivity test passed"
+CHECKPOINT_ERR_DEVICE_CONNECTIVITY = 'Could not connect to Check Point:\n{0}'
+CHECKPOINT_ERR_DEVICE_CONNECTIVITY_NOFORMAT = 'Could not connect to Check Point'
+CHECKPOINT_ERR_CONNECTIVITY_TEST = 'Connectivity test failed'
+CHECKPOINT_SUCC_CONNECTIVITY_TEST = 'Connectivity test passed'
 
 CHECKPOINT_PROG_USING_BASE_URL = "Using base URL '{base_url}'"
 
-CHECKPOINT_OBJECT_NAME_PREFIX = "Phantom - {0}"
+CHECKPOINT_OBJECT_NAME_PREFIX = 'Phantom - {0}'
+
+CHECKPOINT_DEFAULT_REQUEST_TIMEOUT = 60  # in seconds

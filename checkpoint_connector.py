@@ -44,8 +44,8 @@ class CheckpointConnector(BaseConnector):
     ACTION_ID_LIST_POLICIES = "list_policies"
     ACTION_ID_ADD_NETWORK = "add_network"
     ACTION_ID_UPDATE_GROUP_MEMBERS = "update_group_members"
+    ACTION_ID_INSTALL_POLICY = "install policy"
     ACTION_ID_ADD_USER = "add_user"
-
     ACTION_ID_TEST_CONNECTIVITY = "test_connectivity"
 
     def __init__(self):
@@ -140,7 +140,7 @@ class CheckpointConnector(BaseConnector):
         if net_size:
             try:
                 net_size = int(net_size)
-            except:
+            except Exception:
                 self.debug_print("net_size: {0} invalid int".format(net_size))
                 return False
 
@@ -255,7 +255,7 @@ class CheckpointConnector(BaseConnector):
 
         ret_val, resp_json = self._make_rest_call('publish', {}, action_result)
 
-        if (not ret_val) and (not resp_json):
+        if not ret_val and not resp_json:
             return action_result.get_status()
 
         task_id = resp_json.get('task-id')
@@ -271,7 +271,7 @@ class CheckpointConnector(BaseConnector):
 
             ret_val, resp_json = self._make_rest_call('show-task', {'task-id': task_id}, action_result)
 
-            if (not ret_val) and (not resp_json):
+            if not ret_val and not resp_json:
                 continue
 
             if resp_json.get('tasks', [{}])[0].get('status') == 'succeeded':
@@ -305,7 +305,7 @@ class CheckpointConnector(BaseConnector):
                     break
 
             else:
-                if (ip == net_obj.get('subnet4')) and (length == net_obj.get('mask-length4')):
+                if ip == net_obj.get('subnet4') and length == net_obj.get('mask-length4'):
                     found_object = True
                     name = net_obj.get('name')
                     break
@@ -450,7 +450,7 @@ class CheckpointConnector(BaseConnector):
 
             ret_val, resp_json = self._make_rest_call(endpoint, body, action_result)
 
-            if (not ret_val) and (not resp_json):
+            if not ret_val and not resp_json:
                 return action_result.get_status()
 
         ret_val = self._check_for_rule(object_name, layer, action_result)
@@ -465,7 +465,7 @@ class CheckpointConnector(BaseConnector):
 
         ret_val, resp_json = self._make_rest_call('add-access-rule', body, action_result)
 
-        if (not ret_val) and (not resp_json):
+        if not ret_val and not resp_json:
             return action_result.get_status()
 
         action_result.add_data(resp_json)
@@ -476,7 +476,7 @@ class CheckpointConnector(BaseConnector):
         if not skip_install_policy:
             ret_val, resp_json = self._make_rest_call('install-policy', {'policy-package': policy}, action_result)
 
-            if (not ret_val) and (not resp_json):
+            if not ret_val and not resp_json:
                 return action_result.get_status()
 
         return action_result.set_status(phantom.APP_SUCCESS,
@@ -508,7 +508,7 @@ class CheckpointConnector(BaseConnector):
 
         ret_val, resp_json = self._make_rest_call('delete-access-rule', body, action_result)
 
-        if (not ret_val) and (not resp_json):
+        if not ret_val and not resp_json:
             return action_result.get_status()
 
         action_result.add_data(resp_json)
@@ -518,7 +518,7 @@ class CheckpointConnector(BaseConnector):
 
         ret_val, resp_json = self._make_rest_call('install-policy', {'policy-package': policy}, action_result)
 
-        if (not ret_val) and (not resp_json):
+        if not ret_val and not resp_json:
             return action_result.get_status()
 
         return action_result.set_status(phantom.APP_SUCCESS,
@@ -534,7 +534,7 @@ class CheckpointConnector(BaseConnector):
 
         ret_val, resp_json = self._make_rest_call(endpoint, {}, action_result)
 
-        if (not ret_val) and (not resp_json):
+        if not ret_val and not resp_json:
             return action_result.get_status()
 
         action_result.add_data(resp_json)
@@ -589,7 +589,7 @@ class CheckpointConnector(BaseConnector):
 
         ret_val, resp_json = self._make_rest_call(endpoint, body, action_result)
 
-        if (not ret_val) and (not resp_json):
+        if not ret_val and not resp_json:
             return action_result.get_status()
 
         action_result.add_data(resp_json)
@@ -619,7 +619,7 @@ class CheckpointConnector(BaseConnector):
         else:
             return action_result.set_status(phantom.APP_ERROR, "You must specify the host name or unique identifier")
 
-        if (not ret_val) and (not resp_json):
+        if not ret_val and not resp_json:
             return action_result.get_status()
 
         action_result.add_data(resp_json)
@@ -656,7 +656,7 @@ class CheckpointConnector(BaseConnector):
         else:
             return action_result.set_status(phantom.APP_ERROR, "You must specify the host name or unique identifier")
 
-        if (not ret_val) and (not resp_json):
+        if not ret_val and not resp_json:
             return action_result.get_status()
 
         action_result.add_data(resp_json)
@@ -726,7 +726,7 @@ class CheckpointConnector(BaseConnector):
 
         ret_val, resp_json = self._make_rest_call(endpoint, body, action_result)
 
-        if (not ret_val) and (not resp_json):
+        if not ret_val and not resp_json:
             return action_result.get_status()
 
         action_result.add_data(resp_json)
@@ -762,7 +762,7 @@ class CheckpointConnector(BaseConnector):
 
         action_result.add_data(resp_json)
 
-        if (not ret_val) and (not resp_json):
+        if not ret_val and not resp_json:
             return action_result.get_status()
 
         message = "Successfully submitted policy installation"
@@ -799,7 +799,7 @@ class CheckpointConnector(BaseConnector):
 
         action_result.add_data(resp_json)
 
-        if (not ret_val) and (not resp_json):
+        if not ret_val and not resp_json:
             return action_result.get_status()
 
         message = "Successfully created user"
@@ -850,9 +850,9 @@ if __name__ == '__main__':
     # import pudb
     # pudb.set_trace()
 
-    if (len(sys.argv) < 2):
+    if len(sys.argv) < 2:
         print("No test json specified as input")
-        exit(0)
+        sys.exit(0)
 
     with open(sys.argv[1]) as f:
         in_json = f.read()
@@ -864,4 +864,4 @@ if __name__ == '__main__':
         ret_val = connector._handle_action(json.dumps(in_json), None)
         print(json.dumps(json.loads(ret_val), indent=4))
 
-    exit(0)
+    sys.exit(0)

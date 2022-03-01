@@ -47,7 +47,6 @@ class CheckpointConnector(BaseConnector):
     ACTION_ID_INSTALL_POLICY = "install policy"
     ACTION_ID_ADD_USER = "add_user"
     ACTION_ID_TEST_CONNECTIVITY = "test_connectivity"
-
     def __init__(self):
 
         # Call the BaseConnectors init first
@@ -68,7 +67,7 @@ class CheckpointConnector(BaseConnector):
         self._base_url = '{0}web_api/'.format(base_url)
 
         # Headers will always need content-Type
-        self._headers = {"content-Type": "application/json"}
+        self._headers = {'content-Type': 'application/json'}
 
         self.set_validator('ip', self._is_ip)
 
@@ -110,8 +109,8 @@ class CheckpointConnector(BaseConnector):
             net_size = self._get_net_size(net_mask)
         else:
             ip = ip_addr
-            net_size = "32"
-            net_mask = "255.255.255.255"
+            net_size = '32'
+            net_mask = '255.255.255.255'
 
         return (ip, net_size, net_mask)
 
@@ -121,7 +120,7 @@ class CheckpointConnector(BaseConnector):
         try:
             ip, net_size, net_mask = self._break_ip_addr(ip_addr)
         except Exception as e:
-            self.debug_print("Validation for ip_addr failed", e)
+            self.debug_print('Validation for ip_addr failed', e)
             return False
 
         # Validate ip address
@@ -156,7 +155,8 @@ class CheckpointConnector(BaseConnector):
         url = self._base_url + endpoint
 
         try:
-            response = requests.post(url, data=json.dumps(body), headers=self._headers, verify=config[phantom.APP_JSON_VERIFY])
+            response = requests.post(url, data=json.dumps(body), headers=self._headers, verify=config[phantom.APP_JSON_VERIFY],
+                                     timeout=CHECKPOINT_DEFAULT_REQUEST_TIMEOUT)
         except Exception as e:
             return action_result.set_status(phantom.APP_ERROR, CHECKPOINT_ERR_DEVICE_CONNECTIVITY.format(e)), None
 
@@ -203,7 +203,7 @@ class CheckpointConnector(BaseConnector):
         password = config[phantom.APP_JSON_PASSWORD]
         domain = config.get(phantom.APP_JSON_DOMAIN)
 
-        data = {"user": username, "password": password}
+        data = {'user': username, 'password': password}
 
         if domain:
             data['domain'] = domain
@@ -226,10 +226,10 @@ class CheckpointConnector(BaseConnector):
         ret_val, resp_json = self._make_rest_call('logout', {}, action_result)
 
         if phantom.is_fail(ret_val):
-            self.save_progress("Failed to logout: {}".format(action_result.get_status_message()))
+            self.save_progress('Failed to logout: {}'.format(action_result.get_status_message()))
             return action_result.get_status(), action_result.get_status_message()
 
-        return phantom.APP_SUCCESS, "Successfully logged out of session"
+        return phantom.APP_SUCCESS, 'Successfully logged out of session'
 
     def _logout_session(self, param):
 
@@ -283,7 +283,7 @@ class CheckpointConnector(BaseConnector):
         if length != '32':
             endpoint = 'show-networks'
 
-        body = {"details-level": "full"}
+        body = {'details-level': 'full'}
 
         ret_val, resp_json = self._make_rest_call(endpoint, body, action_result)
 
@@ -313,7 +313,7 @@ class CheckpointConnector(BaseConnector):
         if found_name or found_object:
             return name
 
-        return ""
+        return ''
 
     def _check_for_rule(self, name, layer, action_result):
 
@@ -369,11 +369,11 @@ class CheckpointConnector(BaseConnector):
         num_policies = len(policy_list)
 
         if num_policies:
-            message = "Successfully found {0} polic{1}".format(num_policies, 'y' if num_policies == 1 else 'ies')
+            message = 'Successfully found {0} polic{1}'.format(num_policies, 'y' if num_policies == 1 else 'ies')
             action_result.add_data(resp_json)
 
         else:
-            message = "Found no policies"
+            message = 'Found no policies'
 
         return action_result.set_status(phantom.APP_SUCCESS, message)
 
@@ -400,11 +400,11 @@ class CheckpointConnector(BaseConnector):
         num_layers = len(layer_list)
 
         if num_layers:
-            message = "Successfully found {0} layer{1}".format(num_layers, '' if num_layers == 1 else 's')
+            message = 'Successfully found {0} layer{1}'.format(num_layers, '' if num_layers == 1 else 's')
             action_result.add_data(resp_json)
 
         else:
-            message = "Found no layers"
+            message = 'Found no layers'
 
         return action_result.set_status(phantom.APP_SUCCESS, message)
 
@@ -429,7 +429,7 @@ class CheckpointConnector(BaseConnector):
         if new_name is None:
             return action_result.get_status()
 
-        if new_name != "":
+        if new_name != '':
             object_name = new_name
 
         if object_name_param:
@@ -459,7 +459,7 @@ class CheckpointConnector(BaseConnector):
             return action_result.get_status()
 
         if ret_val:
-            return action_result.set_status(phantom.APP_SUCCESS, "IP already blocked. Taking no action.")
+            return action_result.set_status(phantom.APP_SUCCESS, 'IP already blocked. Taking no action.')
 
         body = {'position': 'top', 'layer': layer, 'action': 'Drop', 'destination': object_name, 'name': object_name}
 
@@ -471,7 +471,7 @@ class CheckpointConnector(BaseConnector):
         action_result.add_data(resp_json)
 
         if not self._publish_and_wait(action_result):
-            return action_result.set_status(phantom.APP_ERROR, "Could not publish session after changes")
+            return action_result.set_status(phantom.APP_ERROR, 'Could not publish session after changes')
 
         if not skip_install_policy:
             ret_val, resp_json = self._make_rest_call('install-policy', {'policy-package': policy}, action_result)
@@ -480,7 +480,7 @@ class CheckpointConnector(BaseConnector):
                 return action_result.get_status()
 
         return action_result.set_status(phantom.APP_SUCCESS,
-            "Successfully blocked {0}".format('subnet' if length != '32' else 'IP'))
+            'Successfully blocked {0}'.format('subnet' if length != '32' else 'IP'))
 
     def _unblock_ip(self, param):
 
@@ -502,7 +502,7 @@ class CheckpointConnector(BaseConnector):
             return action_result.get_status()
 
         if not ret_val:
-            return action_result.set_status(phantom.APP_SUCCESS, "IP not blocked. Taking no action.")
+            return action_result.set_status(phantom.APP_SUCCESS, 'IP not blocked. Taking no action.')
 
         body = {'layer': layer, 'name': object_name}
 
@@ -514,7 +514,7 @@ class CheckpointConnector(BaseConnector):
         action_result.add_data(resp_json)
 
         if not self._publish_and_wait(action_result):
-            return action_result.set_status(phantom.APP_ERROR, "Could not publish session after changes")
+            return action_result.set_status(phantom.APP_ERROR, 'Could not publish session after changes')
 
         ret_val, resp_json = self._make_rest_call('install-policy', {'policy-package': policy}, action_result)
 
@@ -522,7 +522,7 @@ class CheckpointConnector(BaseConnector):
             return action_result.get_status()
 
         return action_result.set_status(phantom.APP_SUCCESS,
-            "Successfully unblocked {0}".format('subnet' if length != '32' else 'IP'))
+            'Successfully unblocked {0}'.format('subnet' if length != '32' else 'IP'))
 
     def _list_hosts(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))
@@ -544,9 +544,9 @@ class CheckpointConnector(BaseConnector):
         if resp_json.get('total'):
             total_num_hosts = resp_json.get('total')
             action_result.update_summary({'Total number of hosts': total_num_hosts})
-            message = "Succesfully found {0} host{1}".format(total_num_hosts, '' if total_num_hosts == 1 else 's')
+            message = 'Succesfully found {0} host{1}'.format(total_num_hosts, '' if total_num_hosts == 1 else 's')
         else:
-            message = "Found no hosts"
+            message = 'Found no hosts'
 
         return action_result.set_status(phantom.APP_SUCCESS, message)
 
@@ -585,7 +585,7 @@ class CheckpointConnector(BaseConnector):
         elif ipv6:
             body['ipv6-address'] = ipv6
         else:
-            return action_result.set_status(phantom.APP_ERROR, "You must specify an ip address")
+            return action_result.set_status(phantom.APP_ERROR, 'You must specify an ip address')
 
         ret_val, resp_json = self._make_rest_call(endpoint, body, action_result)
 
@@ -595,9 +595,9 @@ class CheckpointConnector(BaseConnector):
         action_result.add_data(resp_json)
 
         if not self._publish_and_wait(action_result):
-            return action_result.set_status(phantom.APP_ERROR, "Could not publish session after changes")
+            return action_result.set_status(phantom.APP_ERROR, 'Could not publish session after changes')
 
-        message = "Successfully added host"
+        message = 'Successfully added host'
 
         return action_result.set_status(phantom.APP_SUCCESS, message)
 
@@ -617,7 +617,7 @@ class CheckpointConnector(BaseConnector):
         elif name:
             ret_val, resp_json = self._make_rest_call(endpoint, {'name': name}, action_result)
         else:
-            return action_result.set_status(phantom.APP_ERROR, "You must specify the host name or unique identifier")
+            return action_result.set_status(phantom.APP_ERROR, 'You must specify the host name or unique identifier')
 
         if not ret_val and not resp_json:
             return action_result.get_status()
@@ -625,9 +625,9 @@ class CheckpointConnector(BaseConnector):
         action_result.add_data(resp_json)
 
         if not self._publish_and_wait(action_result):
-            return action_result.set_status(phantom.APP_ERROR, "Could not publish session after changes")
+            return action_result.set_status(phantom.APP_ERROR, 'Could not publish session after changes')
 
-        message = "Successfully deleted host"
+        message = 'Successfully deleted host'
 
         return action_result.set_status(phantom.APP_SUCCESS, message)
 

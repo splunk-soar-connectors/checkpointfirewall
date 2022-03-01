@@ -47,6 +47,7 @@ class CheckpointConnector(BaseConnector):
     ACTION_ID_INSTALL_POLICY = "install policy"
     ACTION_ID_ADD_USER = "add_user"
     ACTION_ID_TEST_CONNECTIVITY = "test_connectivity"
+
     def __init__(self):
 
         # Call the BaseConnectors init first
@@ -233,6 +234,8 @@ class CheckpointConnector(BaseConnector):
 
     def _logout_session(self, param):
 
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+
         action_result = self.add_action_result(ActionResult(dict(param)))
 
         if not(self._set_auth_sid(action_result)):
@@ -245,6 +248,8 @@ class CheckpointConnector(BaseConnector):
         ret_val, msg = self._logout(self)
 
         self._headers['X-chkp-sid'] = self._state.get('sid')
+
+        self.save_progress(msg)
 
         return action_result.set_status(phantom.APP_SUCCESS if ret_val else phantom.APP_ERROR, msg)
 
@@ -348,6 +353,8 @@ class CheckpointConnector(BaseConnector):
 
     def _list_policies(self, param):
 
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+
         action_result = self.add_action_result(ActionResult(dict(param)))
 
         if not(self._set_auth_sid(action_result)):
@@ -375,9 +382,13 @@ class CheckpointConnector(BaseConnector):
         else:
             message = 'Found no policies'
 
+        self.save_progress(message)
+
         return action_result.set_status(phantom.APP_SUCCESS, message)
 
     def _list_layers(self, param):
+
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
 
         action_result = self.add_action_result(ActionResult(dict(param)))
 
@@ -406,9 +417,13 @@ class CheckpointConnector(BaseConnector):
         else:
             message = 'Found no layers'
 
+        self.save_progress(message)
+
         return action_result.set_status(phantom.APP_SUCCESS, message)
 
     def _block_ip(self, param):
+
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
 
         action_result = self.add_action_result(ActionResult(dict(param)))
 
@@ -459,7 +474,8 @@ class CheckpointConnector(BaseConnector):
             return action_result.get_status()
 
         if ret_val:
-            return action_result.set_status(phantom.APP_SUCCESS, 'IP already blocked. Taking no action.')
+            self.save_progress("IP already blocked. Taking no action.")
+            return action_result.set_status(phantom.APP_SUCCESS, "IP already blocked. Taking no action.")
 
         body = {'position': 'top', 'layer': layer, 'action': 'Drop', 'destination': object_name, 'name': object_name}
 
@@ -479,10 +495,14 @@ class CheckpointConnector(BaseConnector):
             if not ret_val and not resp_json:
                 return action_result.get_status()
 
+        self.save_progress("Successfully blocked {0}".format('subnet' if length != '32' else 'IP'))
+
         return action_result.set_status(phantom.APP_SUCCESS,
             'Successfully blocked {0}'.format('subnet' if length != '32' else 'IP'))
 
     def _unblock_ip(self, param):
+
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
 
         action_result = self.add_action_result(ActionResult(dict(param)))
 
@@ -502,7 +522,8 @@ class CheckpointConnector(BaseConnector):
             return action_result.get_status()
 
         if not ret_val:
-            return action_result.set_status(phantom.APP_SUCCESS, 'IP not blocked. Taking no action.')
+            self.save_progress("IP not blocked. Taking no action.")
+            return action_result.set_status(phantom.APP_SUCCESS, "IP not blocked. Taking no action.")
 
         body = {'layer': layer, 'name': object_name}
 
@@ -521,10 +542,15 @@ class CheckpointConnector(BaseConnector):
         if not ret_val and not resp_json:
             return action_result.get_status()
 
+        self.save_progress("Successfully unblocked {0}".format('subnet' if length != '32' else 'IP'))
+
         return action_result.set_status(phantom.APP_SUCCESS,
             'Successfully unblocked {0}'.format('subnet' if length != '32' else 'IP'))
 
     def _list_hosts(self, param):
+
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+
         action_result = self.add_action_result(ActionResult(dict(param)))
 
         if not(self._set_auth_sid(action_result)):
@@ -548,9 +574,13 @@ class CheckpointConnector(BaseConnector):
         else:
             message = 'Found no hosts'
 
+        self.save_progress(message)
+
         return action_result.set_status(phantom.APP_SUCCESS, message)
 
     def _add_host(self, param):
+
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
 
         action_result = self.add_action_result(ActionResult(dict(param)))
 
@@ -599,9 +629,14 @@ class CheckpointConnector(BaseConnector):
 
         message = 'Successfully added host'
 
+        self.save_progress(message)
+
         return action_result.set_status(phantom.APP_SUCCESS, message)
 
     def _delete_host(self, param):
+
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+
         action_result = self.add_action_result(ActionResult(dict(param)))
 
         if not(self._set_auth_sid(action_result)):
@@ -629,9 +664,14 @@ class CheckpointConnector(BaseConnector):
 
         message = 'Successfully deleted host'
 
+        self.save_progress(message)
+
         return action_result.set_status(phantom.APP_SUCCESS, message)
 
     def _update_group_members(self, param):
+
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+
         action_result = self.add_action_result(ActionResult(dict(param)))
 
         if not(self._set_auth_sid(action_result)):
@@ -666,9 +706,14 @@ class CheckpointConnector(BaseConnector):
 
         message = "Successfully updated group"
 
+        self.save_progress(message)
+
         return action_result.set_status(phantom.APP_SUCCESS, message)
 
     def _add_network(self, param):
+
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+
         action_result = self.add_action_result(ActionResult(dict(param)))
 
         if not(self._set_auth_sid(action_result)):
@@ -736,9 +781,14 @@ class CheckpointConnector(BaseConnector):
 
         message = "Successfully added network"
 
+        self.save_progress(message)
+
         return action_result.set_status(phantom.APP_SUCCESS, message)
 
     def _install_policy(self, param):
+
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+
         action_result = self.add_action_result(ActionResult(dict(param)))
 
         if not(self._set_auth_sid(action_result)):
@@ -767,9 +817,14 @@ class CheckpointConnector(BaseConnector):
 
         message = "Successfully submitted policy installation"
 
+        self.save_progress(message)
+
         return action_result.set_status(phantom.APP_SUCCESS, message)
 
     def _add_user(self, param):
+
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+
         action_result = self.add_action_result(ActionResult(dict(param)))
 
         if not(self._set_auth_sid(action_result)):
@@ -803,6 +858,9 @@ class CheckpointConnector(BaseConnector):
             return action_result.get_status()
 
         message = "Successfully created user"
+
+        self.save_progress(message)
+
         return action_result.set_status(phantom.APP_SUCCESS, message)
 
     def handle_action(self, param):

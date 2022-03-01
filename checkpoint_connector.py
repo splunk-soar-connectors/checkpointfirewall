@@ -597,7 +597,7 @@ class CheckpointConnector(BaseConnector):
         endpoint = 'add-host'
 
         body = {'name': name}
-        
+
         if comments:
             body["comments"] = comments
 
@@ -739,7 +739,7 @@ class CheckpointConnector(BaseConnector):
 
         if comments:
             body['comments'] = comments
-        
+
         if groups:
             body['groups'] = groups.split(",")
 

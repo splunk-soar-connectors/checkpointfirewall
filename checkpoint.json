@@ -284,7 +284,6 @@
                 "title": "Block IP"
             },
             "output": [
-                
                 {
                     "data_path": "action_result.parameter.ip",
                     "data_type": "string",
@@ -1607,7 +1606,7 @@
                     "example_values": [
                         24
                     ]
-                }
+                },
                 {
                     "data_path": "action_result.parameter.subnet_mask",
                     "data_type": "string"

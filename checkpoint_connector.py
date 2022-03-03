@@ -44,7 +44,7 @@ class CheckpointConnector(BaseConnector):
     ACTION_ID_LIST_POLICIES = "list_policies"
     ACTION_ID_ADD_NETWORK = "add_network"
     ACTION_ID_UPDATE_GROUP_MEMBERS = "update_group_members"
-    ACTION_ID_INSTALL_POLICY = "install policy"
+    ACTION_ID_INSTALL_POLICY = "install_policy"
     ACTION_ID_ADD_USER = "add_user"
     ACTION_ID_TEST_CONNECTIVITY = "test_connectivity"
 
@@ -434,7 +434,7 @@ class CheckpointConnector(BaseConnector):
 
         layer = param.get('layer')
         policy = param.get('policy')
-        skip_install_policy = param["skip_install_policy"]
+        skip_install_policy = param.get("skip_install_policy")
         object_name_param = param.get("object_name")
 
         object_name = 'phantom - {0}/{1}'.format(ip, length)
@@ -444,29 +444,32 @@ class CheckpointConnector(BaseConnector):
         if new_name is None:
             return action_result.get_status()
 
-        if new_name != '':
-            object_name = new_name
-
-        if object_name_param:
-            object_name = object_name_param
-
+        if new_name == object_name:
+            self.save_progress("{} object already exist.".format(object_name))
         else:
-            body = {'name': object_name}
+            if new_name != '':
+                object_name = new_name
 
-            endpoint = 'add-host'
-            json_field = 'ip-address'
+            if object_name_param:
+                object_name = object_name_param
 
-            if length != '32':
-                endpoint = 'add-network'
-                json_field = 'subnet'
-                body['mask-length'] = length
+            else:
+                body = {'name': object_name}
 
-            body[json_field] = ip
+                endpoint = 'add-host'
+                json_field = 'ip-address'
 
-            ret_val, resp_json = self._make_rest_call(endpoint, body, action_result)
+                if length != '32':
+                    endpoint = 'add-network'
+                    json_field = 'subnet'
+                    body['mask-length'] = length
 
-            if not ret_val and not resp_json:
-                return action_result.get_status()
+                body[json_field] = ip
+
+                ret_val, resp_json = self._make_rest_call(endpoint, body, action_result)
+
+                if not ret_val and not resp_json:
+                    return action_result.get_status()
 
         ret_val = self._check_for_rule(object_name, layer, action_result)
 

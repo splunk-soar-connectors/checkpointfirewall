@@ -346,6 +346,27 @@
                     "data_type": "string"
                 },
                 {
+                    "data_path": "action_result.data.*.destination.*.subnet4",
+                    "data_type": "string",
+                    "example_values": [
+                        "123.123.0.0"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.destination.*.subnet-mask",
+                    "data_type": "string",
+                    "example_values": [
+                        "255.255.0.0"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.destination.*.mask-length4",
+                    "data_type": "numeric",
+                    "example_values": [
+                        16
+                    ]
+                },
+                {
                     "data_path": "action_result.data.*.action.type",
                     "data_type": "string"
                 },
@@ -2063,6 +2084,20 @@
                     ]
                 },
                 {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
                     "data_path": "action_result.parameter.access",
                     "data_type": "boolean"
                 },
@@ -2188,6 +2223,188 @@
                 {
                     "data_path": "action_result.message",
                     "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.icon",
+                    "data_type": "string",
+                    "example_values": [
+                        "Objects/user"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.color",
+                    "data_type": "string",
+                    "example_values": [
+                        "black"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.domain.uid",
+                    "data_type": "string",
+                    "example_values": [
+                        "41e821a0-3720-11e3-aa6e-0800200c9fde"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.domain.name",
+                    "data_type": "string",
+                    "example_values": [
+                        "SMC User"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.domain.domain-type",
+                    "data_type": "string",
+                    "example_values": [
+                        "domain"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.to-hour",
+                    "data_type": "string",
+                    "example_values": [
+                        "23:59"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.comments",
+                    "data_type": "string",
+                    "example_values": [
+                        ""
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.from-hour",
+                    "data_type": "string",
+                    "example_values": [
+                        "00:00"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.meta-info.lock",
+                    "data_type": "string",
+                    "example_values": [
+                        "unlocked"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.meta-info.creator",
+                    "data_type": "string",
+                    "example_values": [
+                        "admin"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.meta-info.creation-time.posix",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1646214033562
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.meta-info.creation-time.iso-8601",
+                    "data_type": "string",
+                    "example_values": [
+                        "2022-03-02T15:10+0530"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.meta-info.last-modifier",
+                    "data_type": "string",
+                    "example_values": [
+                        "admin"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.meta-info.last-modify-time.posix",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1646214033562
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.meta-info.last-modify-time.iso-8601",
+                    "data_type": "string",
+                    "example_values": [
+                        "2022-03-02T15:10+0530"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.meta-info.validation-state",
+                    "data_type": "string",
+                    "example_values": [
+                        "ok"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.read-only",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.encryption.ike",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.encryption.public-key",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.encryption.shared-secret",
+                    "data_type": "boolean",
+                    "example_values": [
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.connect-daily",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.expiration-date.posix",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1924885800000
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.expiration-date.iso-8601",
+                    "data_type": "string",
+                    "example_values": [
+                        "2030-12-31T00:00+0530"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.authentication-method",
+                    "data_type": "string",
+                    "example_values": [
+                        "undefined"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
                 }
             ],
             "versions": "EQ(*)"

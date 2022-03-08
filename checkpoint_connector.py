@@ -799,13 +799,17 @@ class CheckpointConnector(BaseConnector):
         if not self._set_auth_sid(action_result):
             return action_result.get_status()
 
-        name = param['name']
+        name = param.get('name')
+        uid = param.get('uid')
 
         endpoint = 'delete-network'
 
-        body = {'name': name}
-
-        ret_val, resp_json = self._make_rest_call(endpoint, body, action_result)
+        if uid:
+            ret_val, resp_json = self._make_rest_call(endpoint, {'uid': uid}, action_result)
+        elif name:
+            ret_val, resp_json = self._make_rest_call(endpoint, {'name': name}, action_result)
+        else:
+            return action_result.set_status(phantom.APP_ERROR, 'You must specify the network name or unique identifier')
 
         if not ret_val and not resp_json:
             return action_result.get_status()
@@ -882,7 +886,7 @@ class CheckpointConnector(BaseConnector):
         if email:
             body["email"] = email
         if phone_number:
-            body["phone_number"] = phone_number
+            body["phone-number"] = phone_number
         if comments:
             body["comments"] = comments
 
@@ -911,20 +915,22 @@ class CheckpointConnector(BaseConnector):
         if not self._set_auth_sid(action_result):
             return action_result.get_status()
 
-        name = param['name']
+        name = param.get('name')
+        uid = param.get('uid')
 
         endpoint = "delete-user"
 
-        body = {
-            "name": name,
-        }
-
-        ret_val, resp_json = self._make_rest_call(endpoint, body, action_result)
-
-        action_result.add_data(resp_json)
+        if uid:
+            ret_val, resp_json = self._make_rest_call(endpoint, {'uid': uid}, action_result)
+        elif name:
+            ret_val, resp_json = self._make_rest_call(endpoint, {'name': name}, action_result)
+        else:
+            return action_result.set_status(phantom.APP_ERROR, 'You must specify the user name or unique identifier')
 
         if not ret_val and not resp_json:
             return action_result.get_status()
+
+        action_result.add_data(resp_json)
 
         if not self._publish_and_wait(action_result):
             return action_result.set_status(phantom.APP_ERROR, "Could not publish session after changes")

@@ -117,7 +117,7 @@
                 {
                     "data_path": "action_result.data.*.packages.*.uid",
                     "data_type": "string",
-                    "column_name": "Policy Uid",
+                    "column_name": "Policy UID",
                     "column_order": 1
                 },
                 {
@@ -206,7 +206,7 @@
                 {
                     "data_path": "action_result.data.*.access-layers.*.uid",
                     "data_type": "string",
-                    "column_name": "Layer Uid",
+                    "column_name": "Layer UID",
                     "column_order": 1
                 },
                 {
@@ -1053,7 +1053,7 @@
                 {
                     "data_path": "action_result.data.*.objects.*.uid",
                     "data_type": "string",
-                    "column_name": "Host Uid",
+                    "column_name": "Host UID",
                     "column_order": 0,
                     "example_values": [
                         "3e8a6f97-1755-43f4-8057-870e8a25ddf9"
@@ -1151,7 +1151,11 @@
                     "description": "Object/host name (must be unique in the domain)",
                     "data_type": "string",
                     "required": true,
-                    "order": 0
+                    "order": 0,
+                    "primary": true,
+                    "contains": [
+                        "check point host name"
+                    ]
                 },
                 "ip": {
                     "description": "IPv4 or IPv6 address to add (if both addresses are required use ipv4 and ipv6 fields explicitly)",
@@ -1213,7 +1217,6 @@
                     "example_values": [
                         "Adding Test user"
                     ]
-
                 },
                 {
                     "data_path": "action_result.parameter.groups",
@@ -1259,6 +1262,9 @@
                     "example_values": [
                         "test host ipv6",
                         "new host"
+                    ],
+                    "contains": [
+                        "check point host name"
                     ]
                 },
                 {
@@ -1311,6 +1317,9 @@
                     "example_values": [
                         "test host ipv6",
                         "new host"
+                    ],
+                    "contains": [
+                        "check point host name"
                     ]
                 },
                 {
@@ -1471,12 +1480,20 @@
                 "uid": {
                     "description": "Host's unique identifier",
                     "data_type": "string",
-                    "order": 0
+                    "order": 0,
+                    "primary": true,
+                    "contains": [
+                        "check point host uid"
+                    ]
                 },
                 "name": {
                     "description": "Object/host name",
                     "data_type": "string",
-                    "order": 1
+                    "order": 1,
+                    "primary": true,
+                    "contains": [
+                        "check point host name"
+                    ]
                 }
             },
             "render": {
@@ -1497,10 +1514,13 @@
                 {
                     "data_path": "action_result.parameter.uid",
                     "data_type": "string",
-                    "column_name": "Host Uid",
+                    "column_name": "Host UID",
                     "column_order": 0,
                     "example_values": [
                         "7a20fab7-f411-4a1b-a541-58c6d7596934"
+                    ],
+                    "contains": [
+                        "check point host uid"
                     ]
                 },
                 {
@@ -1510,6 +1530,9 @@
                     "column_order": 1,
                     "example_values": [
                         "test host ipv6 ipv4"
+                    ],
+                    "contains": [
+                        "check point host name"
                     ]
                 },
                 {
@@ -1551,6 +1574,8 @@
             "action": "add network",
             "description": "Create network object",
             "type": "contain",
+            "verbose": "You must need to specify one subnet and a subnet mask length or subnet mask",
+            "undo": "delete network",
             "identifier": "add_network",
             "read_only": false,
             "parameters": {
@@ -1558,6 +1583,10 @@
                     "description": "Object/network name (must be unique in the domain)",
                     "data_type": "string",
                     "required": true,
+                    "primary": true,
+                    "contains": [
+                        "check point network name"
+                    ],
                     "order": 0
                 },
                 "subnet": {
@@ -1654,6 +1683,9 @@
                     "example_values": [
                         "test host ipv6",
                         "new host"
+                    ],
+                    "contains": [
+                        "check point network name"
                     ]
                 },
                 {
@@ -1779,19 +1811,15 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.domain.uid",
-                    "data_type": "string",
-                    "example_values": [
-                        "41e821a0-3720-11e3-aa6e-0800200c9fde"
-                    ]
-                },
-                {
                     "data_path": "action_result.data.*.name",
                     "data_type": "string",
                     "column_name": "Network Name",
                     "column_order": 0,
                     "example_values": [
                         "new network"
+                    ],
+                    "contains": [
+                        "check point network name"
                     ]
                 },
                 {
@@ -1804,6 +1832,18 @@
                     ],
                     "contains": [
                         "ipv6"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.domain.uid",
+                    "data_type": "string",
+                    "example_values": [
+                        "41e821a0-3720-11e3-aa6e-0800200c9fde"
+                    ],
+                    "column_name": "UID",
+                    "column_order": 2,
+                    "contains": [
+                        "check point network uid"
                     ]
                 },
                 {
@@ -1932,14 +1972,28 @@
             "action": "delete network",
             "description": "Delete network object",
             "type": "contain",
+            "verbose": "To delete a network, either specify <b>uid</b> or <b>name</b>. If provided both, this action will prioritize the <b>uid</b> parameter.",
+            "undo": "add network",
             "identifier": "delete_network",
             "read_only": false,
             "parameters": {
                 "name": {
                     "description": "Object/host name to be deleted",
                     "data_type": "string",
-                    "required": true,
-                    "order": 0
+                    "order": 0,
+                    "primary": true,
+                    "contains": [
+                        "check point network name"
+                    ]
+                },
+                "uid": {
+                    "description": "Object/host uid to be deleted",
+                    "data_type": "string",
+                    "order": 1,
+                    "primary": true,
+                    "contains": [
+                        "check point network uid"
+                    ]
                 }
             },
             "render": {
@@ -1998,6 +2052,21 @@
                     "column_order": 1,
                     "example_values": [
                         "Test Network"
+                    ],
+                    "contains": [
+                        "check point network name"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.uid",
+                    "data_type": "string",
+                    "column_name": "UID",
+                    "column_order": 2,
+                    "example_values": [
+                        "e1485577-3f1d-4ec2-89fc-a98747146d75"
+                    ],
+                    "contains": [
+                        "check point network uid"
                     ]
                 }
             ],
@@ -2007,6 +2076,7 @@
             "action": "update group members",
             "description": "Update group members",
             "type": "generic",
+            "verbose": "Either specify <b>uid</b> or <b>name</b>. If provided both, this action will prioritize the <b>uid</b> parameter.",
             "identifier": "update_group_members",
             "read_only": false,
             "parameters": {
@@ -2099,12 +2169,11 @@
                 {
                     "data_path": "action_result.data.*.uid",
                     "data_type": "string",
-                    "column_name": "Group Uid",
+                    "column_name": "Group UID",
                     "column_order": 0,
                     "example_values": [
                         "7a20fab7-f411-4a1b-a541-58c6d7596934"
                     ]
-
                 },
                 {
                     "data_path": "action_result.data.*.name",
@@ -2471,6 +2540,7 @@
             "action": "add user",
             "description": "Create a new user based on a pre-built template",
             "type": "generic",
+            "undo": "delete user",
             "identifier": "add_user",
             "read_only": false,
             "parameters": {
@@ -2478,6 +2548,10 @@
                     "description": "The name of the user to be created. Must be unique in the domain",
                     "data_type": "string",
                     "required": true,
+                    "primary": true,
+                    "contains": [
+                        "check point user name"
+                    ],
                     "order": 0
                 },
                 "template": {
@@ -2538,6 +2612,9 @@
                     "data_type": "string",
                     "example_values": [
                         "test user"
+                    ],
+                    "contains": [
+                        "check point user name"
                     ]
                 },
                 {
@@ -2568,6 +2645,9 @@
                     "column_order": 1,
                     "example_values": [
                         "Test user"
+                    ],
+                    "contains": [
+                        "check point name"
                     ]
                 },
                 {
@@ -2780,14 +2860,27 @@
             "action": "delete user",
             "description": "Delete existing user",
             "type": "generic",
+            "undo": "add user",
+            "verbose": "Either specify <b>uid</b> or <b>name</b>. If provided both, this action will prioritize the <b>uid</b> parameter.",
             "identifier": "delete_user",
             "read_only": false,
             "parameters": {
                 "name": {
                     "description": "Name of the user to be deleted",
                     "data_type": "string",
-                    "required": true,
+                    "primary": true,
+                    "contains": [
+                        "check point user name"
+                    ],
                     "order": 0
+                },
+                "uid": {
+                    "description": "UID of the user to be deleted",
+                    "data_type": "string",
+                    "contains": [
+                        "check point user uid"
+                    ],
+                    "order": 1
                 }
             },
             "render": {
@@ -2846,6 +2939,21 @@
                     "column_order": 1,
                     "example_values": [
                         "Test user"
+                    ],
+                    "contains": [
+                        "check point user name"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.uid",
+                    "data_type": "string",
+                    "column_name": "UID",
+                    "column_order": 2,
+                    "example_values": [
+                        "28c38771-4bf2-46fe-a402-f7dc29707d34"
+                    ],
+                    "contains": [
+                        "check point user uid"
                     ]
                 }
             ],

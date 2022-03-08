@@ -43,9 +43,11 @@ class CheckpointConnector(BaseConnector):
     ACTION_ID_LIST_LAYERS = "list_layers"
     ACTION_ID_LIST_POLICIES = "list_policies"
     ACTION_ID_ADD_NETWORK = "add_network"
+    ACTION_ID_DELETE_NETWORK = "delete_network"
     ACTION_ID_UPDATE_GROUP_MEMBERS = "update_group_members"
     ACTION_ID_INSTALL_POLICY = "install_policy"
     ACTION_ID_ADD_USER = "add_user"
+    ACTION_ID_DELETE_USER = "delete_user"
     ACTION_ID_TEST_CONNECTIVITY = "test_connectivity"
 
     def __init__(self):
@@ -238,7 +240,7 @@ class CheckpointConnector(BaseConnector):
 
         action_result = self.add_action_result(ActionResult(dict(param)))
 
-        if not(self._set_auth_sid(action_result)):
+        if not self._set_auth_sid(action_result):
             return action_result.get_status()
 
         sid_to_logout = param.get('session_id', self._state.get('sid'))
@@ -357,7 +359,7 @@ class CheckpointConnector(BaseConnector):
 
         action_result = self.add_action_result(ActionResult(dict(param)))
 
-        if not(self._set_auth_sid(action_result)):
+        if not self._set_auth_sid(action_result):
             return action_result.get_status()
 
         endpoint = 'show-packages'
@@ -392,7 +394,7 @@ class CheckpointConnector(BaseConnector):
 
         action_result = self.add_action_result(ActionResult(dict(param)))
 
-        if not(self._set_auth_sid(action_result)):
+        if not self._set_auth_sid(action_result):
             return action_result.get_status()
 
         endpoint = 'show-access-layers'
@@ -427,7 +429,7 @@ class CheckpointConnector(BaseConnector):
 
         action_result = self.add_action_result(ActionResult(dict(param)))
 
-        if not(self._set_auth_sid(action_result)):
+        if not self._set_auth_sid(action_result):
             return action_result.get_status()
 
         ip, length, mask = self._break_ip_addr(param.get(phantom.APP_JSON_IP))
@@ -509,7 +511,7 @@ class CheckpointConnector(BaseConnector):
 
         action_result = self.add_action_result(ActionResult(dict(param)))
 
-        if not(self._set_auth_sid(action_result)):
+        if not self._set_auth_sid(action_result):
             return action_result.get_status()
 
         ip, length, mask = self._break_ip_addr(param.get(phantom.APP_JSON_IP))
@@ -556,7 +558,7 @@ class CheckpointConnector(BaseConnector):
 
         action_result = self.add_action_result(ActionResult(dict(param)))
 
-        if not(self._set_auth_sid(action_result)):
+        if not self._set_auth_sid(action_result):
             return action_result.get_status()
 
         endpoint = 'show-hosts'
@@ -587,7 +589,7 @@ class CheckpointConnector(BaseConnector):
 
         action_result = self.add_action_result(ActionResult(dict(param)))
 
-        if not(self._set_auth_sid(action_result)):
+        if not self._set_auth_sid(action_result):
             return action_result.get_status()
 
         ip = param.get(phantom.APP_JSON_IP)
@@ -642,7 +644,7 @@ class CheckpointConnector(BaseConnector):
 
         action_result = self.add_action_result(ActionResult(dict(param)))
 
-        if not(self._set_auth_sid(action_result)):
+        if not self._set_auth_sid(action_result):
             return action_result.get_status()
 
         name = param.get('name')
@@ -677,7 +679,7 @@ class CheckpointConnector(BaseConnector):
 
         action_result = self.add_action_result(ActionResult(dict(param)))
 
-        if not(self._set_auth_sid(action_result)):
+        if not self._set_auth_sid(action_result):
             return action_result.get_status()
 
         name = param.get('name')
@@ -719,7 +721,7 @@ class CheckpointConnector(BaseConnector):
 
         action_result = self.add_action_result(ActionResult(dict(param)))
 
-        if not(self._set_auth_sid(action_result)):
+        if not self._set_auth_sid(action_result):
             return action_result.get_status()
 
         name = param['name']
@@ -788,13 +790,44 @@ class CheckpointConnector(BaseConnector):
 
         return action_result.set_status(phantom.APP_SUCCESS, message)
 
+    def _delete_network(self, param):
+
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+
+        action_result = self.add_action_result(ActionResult(dict(param)))
+
+        if not self._set_auth_sid(action_result):
+            return action_result.get_status()
+
+        name = param['name']
+
+        endpoint = 'delete-network'
+
+        body = {'name': name}
+
+        ret_val, resp_json = self._make_rest_call(endpoint, body, action_result)
+
+        if not ret_val and not resp_json:
+            return action_result.get_status()
+
+        action_result.add_data(resp_json)
+
+        if not self._publish_and_wait(action_result):
+            return action_result.set_status(phantom.APP_ERROR, "Could not publish session after changes")
+
+        message = "Successfully deleted network"
+
+        self.save_progress(message)
+
+        return action_result.set_status(phantom.APP_SUCCESS, message)
+
     def _install_policy(self, param):
 
         self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
 
         action_result = self.add_action_result(ActionResult(dict(param)))
 
-        if not(self._set_auth_sid(action_result)):
+        if not self._set_auth_sid(action_result):
             return action_result.get_status()
 
         policy = param['policy']
@@ -830,7 +863,7 @@ class CheckpointConnector(BaseConnector):
 
         action_result = self.add_action_result(ActionResult(dict(param)))
 
-        if not(self._set_auth_sid(action_result)):
+        if not self._set_auth_sid(action_result):
             return action_result.get_status()
 
         name = param['name']
@@ -860,7 +893,43 @@ class CheckpointConnector(BaseConnector):
         if not ret_val and not resp_json:
             return action_result.get_status()
 
+        if not self._publish_and_wait(action_result):
+            return action_result.set_status(phantom.APP_ERROR, "Could not publish session after changes")
+
         message = "Successfully created user"
+
+        self.save_progress(message)
+
+        return action_result.set_status(phantom.APP_SUCCESS, message)
+
+    def _delete_user(self, param):
+
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+
+        action_result = self.add_action_result(ActionResult(dict(param)))
+
+        if not self._set_auth_sid(action_result):
+            return action_result.get_status()
+
+        name = param['name']
+
+        endpoint = "delete-user"
+
+        body = {
+            "name": name,
+        }
+
+        ret_val, resp_json = self._make_rest_call(endpoint, body, action_result)
+
+        action_result.add_data(resp_json)
+
+        if not ret_val and not resp_json:
+            return action_result.get_status()
+
+        if not self._publish_and_wait(action_result):
+            return action_result.set_status(phantom.APP_ERROR, "Could not publish session after changes")
+
+        message = "Successfully deleted user"
 
         self.save_progress(message)
 
@@ -894,10 +963,14 @@ class CheckpointConnector(BaseConnector):
             result = self._add_host(param)
         elif action_id == self.ACTION_ID_ADD_NETWORK:
             result = self._add_network(param)
+        elif action_id == self.ACTION_ID_DELETE_NETWORK:
+            result = self._delete_network(param)
         elif action_id == self.ACTION_ID_INSTALL_POLICY:
             result = self._install_policy(param)
         elif action_id == self.ACTION_ID_ADD_USER:
             result = self._add_user(param)
+        elif action_id == self.ACTION_ID_DELETE_USER:
+            result = self._delete_user(param)
         elif action_id == self.ACTION_ID_UPDATE_GROUP_MEMBERS:
             result = self._update_group_members(param)
 

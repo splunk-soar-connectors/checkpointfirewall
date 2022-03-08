@@ -1,3 +1,3 @@
 **Unreleased**
 
-* Added new actions 'add network', 'update group members', 'install policy' and 'add user' [PAPP-23430]
+* Added new actions 'add network', 'update group members', 'install policy', 'add user', 'delete user' and 'delete network'

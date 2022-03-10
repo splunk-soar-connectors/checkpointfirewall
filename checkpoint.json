@@ -1724,13 +1724,27 @@
                     ]
                 },
                 {
+                    "data_path": "action_result.data.*.uid",
+                    "data_type": "string",
+                    "example_values": [
+                        "e1485577-3f1d-4ec2-89fc-a98747146d75",
+                        "b87fa85f-856d-4709-b3cf-05507f5511e7",
+                        "28c38771-4bf2-46fe-a402-f7dc29707d34"
+                    ],
+                    "column_name": "UID",
+                    "column_order": 2,
+                    "contains": [
+                        "check point network uid"
+                    ]
+                },
+                {
                     "data_path": "action_result.data.*.subnet4",
                     "data_type": "string",
                     "example_values": [
                         "192.0.2.0"
                     ],
                     "column_name": "IPV4 SUBNET",
-                    "column_order": 1,
+                    "column_order": 2,
                     "contains": [
                         "check point network uid"
                     ]
@@ -1742,7 +1756,7 @@
                         "2001:d00::"
                     ],
                     "column_name": "IPV6 SUBNET",
-                    "column_order": 2
+                    "column_order": 3
                 },
                 {
                     "data_path": "action_result.data.*.broadcast",
@@ -1758,7 +1772,7 @@
                         "255.255.255.0"
                     ],
                     "column_name": "IPV4 SUBNET MASK",
-                    "column_order": 3
+                    "column_order": 4
                 },
                 {
                     "data_path": "action_result.data.*.mask-length4",
@@ -1767,7 +1781,7 @@
                         24
                     ],
                     "column_name": "IPV4 SUBNET MASK LENGTH",
-                    "column_order": 4
+                    "column_order": 5
                 },
                 {
                     "data_path": "action_result.data.*.mask-length6",
@@ -1776,7 +1790,7 @@
                         24
                     ],
                     "column_name": "IPV6 SUBNET MASK LENGTH",
-                    "column_order": 5
+                    "column_order": 6
                 },
                 {
                     "data_path": "action_result.parameter.subnet_mask",
@@ -1954,20 +1968,6 @@
                     "data_type": "string",
                     "example_values": [
                         "network"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.uid",
-                    "data_type": "string",
-                    "example_values": [
-                        "e1485577-3f1d-4ec2-89fc-a98747146d75",
-                        "b87fa85f-856d-4709-b3cf-05507f5511e7",
-                        "28c38771-4bf2-46fe-a402-f7dc29707d34"
-                    ],
-                    "column_name": "UID",
-                    "column_order": 2,
-                    "contains": [
-                        "check point network uid"
                     ]
                 },
                 {

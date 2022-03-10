@@ -1579,7 +1579,7 @@
             "action": "add network",
             "description": "Create network object",
             "type": "contain",
-            "verbose": "You must need to specify one subnet and a subnet mask length or subnet mask.",
+            "verbose": "For add a network, You must need to specify one <b>subnet</b> and a <b>subnet mask length</b> or <b>subnet mask</b> parameter.",
             "undo": "delete network",
             "identifier": "add_network",
             "read_only": false,

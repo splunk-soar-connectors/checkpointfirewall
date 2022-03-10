@@ -1732,7 +1732,7 @@
                         "28c38771-4bf2-46fe-a402-f7dc29707d34"
                     ],
                     "column_name": "UID",
-                    "column_order": 2,
+                    "column_order": 1,
                     "contains": [
                         "check point network uid"
                     ]

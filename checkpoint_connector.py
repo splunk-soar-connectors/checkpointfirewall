@@ -180,6 +180,10 @@ class CheckpointConnector(BaseConnector):
                 for error in resp_json.get('errors'):
                     action_result.append_to_message('\nERROR: {0}'.format(error.get('message')))
 
+            if resp_json.get('blocking-errors'):
+                for error in resp_json.get('blocking-errors'):
+                    action_result.append_to_message('\nERROR: {0}'.format(error.get('message')))
+
             return action_result.get_status(), None
 
         return phantom.APP_SUCCESS, resp_json
@@ -607,8 +611,10 @@ class CheckpointConnector(BaseConnector):
             body["comments"] = comments
 
         if groups:
-            groups_list = groups.split(",")
-            body["groups"] = groups_list
+            groups_list = [x.strip() for x in groups.split(",")]
+            groups_list = list(filter(None, groups_list))
+            if groups_list:
+                body['groups'] = groups_list
 
         if ip:
             body['ip-address'] = ip
@@ -687,10 +693,13 @@ class CheckpointConnector(BaseConnector):
         members = param["members"]
         action = param["action"]
 
-        members = members.split(",")
-
-        members_object = {action: members} if action in ['add', 'remove'] else members
-        members_payload = {'members': members_object}
+        members = [x.strip() for x in members.split(",")]
+        members = list(filter(None, members))
+        if members:
+            members_object = {action: members} if action in ['add', 'remove'] else members
+            members_payload = {'members': members_object}
+        else:
+            return action_result.set_status(phantom.APP_ERROR, "Please enter valid members")
 
         endpoint = 'set-group'
 
@@ -746,7 +755,10 @@ class CheckpointConnector(BaseConnector):
             body['comments'] = comments
 
         if groups:
-            body['groups'] = groups.split(",")
+            groups_list = [x.strip() for x in groups.split(",")]
+            groups_list = list(filter(None, groups_list))
+            if groups_list:
+                body['groups'] = groups_list
 
         if subnet:
             body['subnet'] = subnet
@@ -835,13 +847,18 @@ class CheckpointConnector(BaseConnector):
             return action_result.get_status()
 
         policy = param['policy']
-        targets = param['targets'].split(",")
+        targets = param['targets']
         access = param.get("access")
 
-        body = {
-            "policy-package": policy,
-            "targets": targets
-        }
+        targets = [x.strip() for x in targets.split(",")]
+        targets = list(filter(None, targets))
+        if targets:
+            body = {
+                "policy-package": policy,
+                "targets": targets
+            }
+        else:
+            return action_result.set_status(phantom.APP_ERROR, "Please enter valid targets")
 
         endpoint = "install-policy"
 

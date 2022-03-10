@@ -1479,7 +1479,7 @@
             "verbose": "To delete a host, either specify <b>uid</b> or <b>name</b>. If provided both, this action will prioritize the <b>uid</b> parameter.",
             "type": "correct",
             "identifier": "delete_host",
-            "undo": "delete host",
+            "undo": "add host",
             "read_only": false,
             "parameters": {
                 "uid": {

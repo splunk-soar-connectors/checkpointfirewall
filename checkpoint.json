@@ -352,8 +352,8 @@
                     "data_path": "action_result.parameter.skip_install_policy",
                     "data_type": "boolean",
                     "example_values": [
-                        "true",
-                        "false"
+                        true,
+                        false
                     ]
                 },
                 {
@@ -1134,6 +1134,13 @@
                     "example_values": [
                         1
                     ]
+                },
+                {
+                    "data_path": "action_result.summary.Total number of hosts",
+                    "data_type": "numeric",
+                    "example_values": [
+                        9
+                    ]
                 }
             ],
             "versions": "EQ(*)"
@@ -1469,6 +1476,48 @@
                     "example_values": [
                         1
                     ]
+                },
+                {
+                    "data_path": "action_result.data.*.groups.*.uid",
+                    "data_type": "string",
+                    "example_values": [
+                        "86b77630-acc5-4fa4-9c5e-e88a32a6b317"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.groups.*.name",
+                    "data_type": "string",
+                    "example_values": [
+                        "Phantom Group 123"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.groups.*.type",
+                    "data_type": "string",
+                    "example_values": [
+                        "group"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.groups.*.domain.uid",
+                    "data_type": "string",
+                    "example_values": [
+                        "41e821a0-3720-11e3-aa6e-0800200c9fde"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.groups.*.domain.name",
+                    "data_type": "string",
+                    "example_values": [
+                        "SMC User"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.groups.*.domain.domain-type",
+                    "data_type": "string",
+                    "example_values": [
+                        "domain"
+                    ]
                 }
             ],
             "versions": "EQ(*)"
@@ -1657,7 +1706,7 @@
                 "type": "table",
                 "width": 12,
                 "height": 5,
-                "title": "Block IP"
+                "title": "Add Network"
             },
             "output": [
                 {
@@ -1743,7 +1792,7 @@
                     "example_values": [
                         "192.0.2.0"
                     ],
-                    "column_name": "IPV4 SUBNET",
+                    "column_name": "IPV4 Subnet",
                     "column_order": 2,
                     "contains": [
                         "check point network uid"
@@ -1755,7 +1804,7 @@
                     "example_values": [
                         "2001:d00::"
                     ],
-                    "column_name": "IPV6 SUBNET",
+                    "column_name": "IPV6 Subnet",
                     "column_order": 3
                 },
                 {
@@ -1771,7 +1820,7 @@
                     "example_values": [
                         "255.255.255.0"
                     ],
-                    "column_name": "IPV4 SUBNET MASK",
+                    "column_name": "IPV4 Subnet Mask",
                     "column_order": 4
                 },
                 {
@@ -1780,7 +1829,7 @@
                     "example_values": [
                         24
                     ],
-                    "column_name": "IPV4 SUBNET MASK LENGTH",
+                    "column_name": "IPV4 Subnet Mask Length",
                     "column_order": 5
                 },
                 {
@@ -1789,7 +1838,7 @@
                     "example_values": [
                         24
                     ],
-                    "column_name": "IPV6 SUBNET MASK LENGTH",
+                    "column_name": "IPV6 Subnet Mask Length",
                     "column_order": 6
                 },
                 {
@@ -1801,21 +1850,21 @@
                 },
                 {
                     "data_path": "action_result.parameter.subnet_mask_length",
-                    "data_type": "string",
+                    "data_type": "numeric",
                     "example_values": [
                         24
                     ]
                 },
                 {
                     "data_path": "action_result.parameter.subnet_mask_length_v4",
-                    "data_type": "string",
+                    "data_type": "numeric",
                     "example_values": [
                         24
                     ]
                 },
                 {
                     "data_path": "action_result.parameter.subnet_mask_length_v6",
-                    "data_type": "string",
+                    "data_type": "numeric",
                     "example_values": [
                         24
                     ]
@@ -1994,6 +2043,48 @@
                     "example_values": [
                         1
                     ]
+                },
+                {
+                    "data_path": "action_result.data.*.groups.*.uid",
+                    "data_type": "string",
+                    "example_values": [
+                        "afa45412-8030-4274-8ae5-f3fe61cd8b7c"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.groups.*.name",
+                    "data_type": "string",
+                    "example_values": [
+                        "group phantom smart console"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.groups.*.type",
+                    "data_type": "string",
+                    "example_values": [
+                        "group"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.groups.*.domain.uid",
+                    "data_type": "string",
+                    "example_values": [
+                        "41e821a0-3720-11e3-aa6e-0800200c9fde"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.groups.*.domain.name",
+                    "data_type": "string",
+                    "example_values": [
+                        "SMC User"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.groups.*.domain.domain-type",
+                    "data_type": "string",
+                    "example_values": [
+                        "domain"
+                    ]
                 }
             ],
             "versions": "EQ(*)"
@@ -2030,7 +2121,7 @@
                 "type": "table",
                 "width": 12,
                 "height": 5,
-                "title": "Block IP"
+                "title": "Delete Network"
             },
             "output": [
                 {
@@ -2141,7 +2232,7 @@
                 "type": "table",
                 "width": 12,
                 "height": 5,
-                "title": "Delete Host"
+                "title": "Update Group Members"
             },
             "output": [
                 {
@@ -2526,8 +2617,8 @@
                     "data_path": "action_result.parameter.access",
                     "data_type": "boolean",
                     "example_values": [
-                        "true",
-                        "false"
+                        true,
+                        false
                     ]
                 },
                 {
@@ -2610,7 +2701,7 @@
                 "type": "table",
                 "width": 12,
                 "height": 5,
-                "title": "Install Policy"
+                "title": "Add User"
             },
             "output": [
                 {
@@ -2885,6 +2976,13 @@
                     "example_values": [
                         1
                     ]
+                },
+                {
+                    "data_path": "action_result.data.*.phone-number",
+                    "data_type": "string",
+                    "example_values": [
+                        "1234567890"
+                    ]
                 }
             ],
             "versions": "EQ(*)"
@@ -2921,7 +3019,7 @@
                 "type": "table",
                 "width": 12,
                 "height": 5,
-                "title": "Install Policy"
+                "title": "Delete User"
             },
             "output": [
                 {

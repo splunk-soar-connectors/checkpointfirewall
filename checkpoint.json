@@ -7,12 +7,15 @@
     "type": "firewall",
     "license": "Copyright (c) 2017-2022 Splunk Inc.",
     "main_module": "checkpoint_connector.py",
-    "app_version": "2.1.5",
-    "utctime_updated": "2022-02-10T23:40:52.000000Z",
+    "app_version": "2.2.0",
+    "utctime_updated": "2022-01-13T00:10:58.000000Z",
     "product_vendor": "Check Point Software Technologies",
     "product_name": "Check Point Firewall",
     "product_version_regex": ".*",
     "min_phantom_version": "5.1.0",
+    "latest_tested_versions": [
+        "R81"
+    ],
     "logo": "logo_checkpoint.svg",
     "logo_dark": "logo_checkpoint_dark.svg",
     "python_version": "3",
@@ -27,7 +30,6 @@
         "verify_server_cert": {
             "data_type": "boolean",
             "description": "Verify server certificate",
-            "required": true,
             "order": 1,
             "default": true
         },
@@ -46,7 +48,6 @@
         "domain": {
             "description": "Domain",
             "data_type": "string",
-            "required": false,
             "order": 4
         }
     },
@@ -77,22 +78,28 @@
             },
             "output": [
                 {
-                    "data_path": "action_result.data.*.to",
-                    "data_type": "numeric"
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.from",
                     "data_type": "numeric"
                 },
                 {
-                    "data_path": "action_result.data.*.total",
-                    "data_type": "numeric"
+                    "data_path": "action_result.data.*.packages.*.domain.domain-type",
+                    "data_type": "string"
                 },
                 {
-                    "data_path": "action_result.data.*.packages.*.uid",
-                    "data_type": "string",
-                    "column_name": "Policy UID",
-                    "column_order": 1
+                    "data_path": "action_result.data.*.packages.*.domain.name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.packages.*.domain.uid",
+                    "data_type": "string"
                 },
                 {
                     "data_path": "action_result.data.*.packages.*.name",
@@ -108,32 +115,43 @@
                     "data_type": "string"
                 },
                 {
-                    "data_path": "action_result.data.*.packages.*.domain.uid",
-                    "data_type": "string"
+                    "data_path": "action_result.data.*.packages.*.uid",
+                    "data_type": "string",
+                    "column_name": "Policy UID",
+                    "column_order": 1
                 },
                 {
-                    "data_path": "action_result.data.*.packages.*.domain.name",
-                    "data_type": "string"
+                    "data_path": "action_result.data.*.to",
+                    "data_type": "numeric"
                 },
                 {
-                    "data_path": "action_result.data.*.packages.*.domain.domain-type",
-                    "data_type": "string"
+                    "data_path": "action_result.data.*.total",
+                    "data_type": "numeric"
                 },
                 {
-                    "data_path": "action_result.status",
+                    "data_path": "action_result.summary",
                     "data_type": "string"
                 },
                 {
                     "data_path": "action_result.message",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "example_values": [
+                        "Successfully found 1 policy"
+                    ]
                 },
                 {
                     "data_path": "summary.total_objects",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
                 },
                 {
                     "data_path": "summary.total_objects_successful",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
                 }
             ],
             "versions": "EQ(*)"
@@ -153,22 +171,24 @@
             },
             "output": [
                 {
-                    "data_path": "action_result.data.*.to",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.from",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.total",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.access-layers.*.uid",
+                    "data_path": "action_result.status",
                     "data_type": "string",
-                    "column_name": "Layer UID",
-                    "column_order": 1
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.access-layers.*.domain.domain-type",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.access-layers.*.domain.name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.access-layers.*.domain.uid",
+                    "data_type": "string"
                 },
                 {
                     "data_path": "action_result.data.*.access-layers.*.name",
@@ -184,32 +204,47 @@
                     "data_type": "string"
                 },
                 {
-                    "data_path": "action_result.data.*.access-layers.*.domain.uid",
-                    "data_type": "string"
+                    "data_path": "action_result.data.*.access-layers.*.uid",
+                    "data_type": "string",
+                    "column_name": "Layer UID",
+                    "column_order": 1
                 },
                 {
-                    "data_path": "action_result.data.*.access-layers.*.domain.name",
-                    "data_type": "string"
+                    "data_path": "action_result.data.*.from",
+                    "data_type": "numeric"
                 },
                 {
-                    "data_path": "action_result.data.*.access-layers.*.domain.domain-type",
-                    "data_type": "string"
+                    "data_path": "action_result.data.*.to",
+                    "data_type": "numeric"
                 },
                 {
-                    "data_path": "action_result.status",
+                    "data_path": "action_result.data.*.total",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.summary",
                     "data_type": "string"
                 },
                 {
                     "data_path": "action_result.message",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "example_values": [
+                        "Successfully found 1 layer"
+                    ]
                 },
                 {
                     "data_path": "summary.total_objects",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
                 },
                 {
                     "data_path": "summary.total_objects_successful",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
                 }
             ],
             "versions": "EQ(*)"
@@ -252,6 +287,12 @@
                     "primary": true,
                     "required": true,
                     "order": 2
+                },
+                "skip_install_policy": {
+                    "description": "Skip the policy installation step",
+                    "data_type": "boolean",
+                    "default": false,
+                    "order": 3
                 }
             },
             "render": {
@@ -262,127 +303,65 @@
             },
             "output": [
                 {
-                    "data_path": "action_result.data.*.uid",
-                    "data_type": "string"
+                    "data_path": "action_result.parameter.ip",
+                    "data_type": "string",
+                    "column_name": "IP",
+                    "column_order": 0,
+                    "contains": [
+                        "ip"
+                    ],
+                    "example_values": [
+                        "1.1.1.1"
+                    ]
                 },
                 {
-                    "data_path": "action_result.data.*.vpn.*.uid",
-                    "data_type": "string"
+                    "data_path": "action_result.parameter.policy",
+                    "data_type": "string",
+                    "column_name": "Policy",
+                    "column_order": 1,
+                    "contains": [
+                        "check point policy"
+                    ],
+                    "example_values": [
+                        "standard"
+                    ]
                 },
                 {
-                    "data_path": "action_result.data.*.vpn.*.name",
-                    "data_type": "string"
+                    "data_path": "action_result.parameter.layer",
+                    "data_type": "string",
+                    "column_name": "Layer",
+                    "column_order": 2,
+                    "contains": [
+                        "check point layer"
+                    ],
+                    "example_values": [
+                        "network"
+                    ]
                 },
                 {
-                    "data_path": "action_result.data.*.vpn.*.type",
-                    "data_type": "string"
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "column_name": "Status",
+                    "column_order": 3,
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
                 },
                 {
-                    "data_path": "action_result.data.*.vpn.*.domain.uid",
-                    "data_type": "string"
+                    "data_path": "action_result.parameter.skip_install_policy",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
                 },
                 {
-                    "data_path": "action_result.data.*.vpn.*.domain.name",
-                    "data_type": "string"
+                    "data_path": "action_result.data.*.action-settings.enable-identity-captive-portal",
+                    "data_type": "boolean"
                 },
                 {
-                    "data_path": "action_result.data.*.vpn.*.domain.domain-type",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.data.*.uid",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.data.*.name",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.data.*.type",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.data.*.domain.uid",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.data.*.domain.name",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.data.*.domain.domain-type",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.name",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.time.*.uid",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.time.*.name",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.time.*.type",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.time.*.domain.uid",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.time.*.domain.name",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.time.*.domain.domain-type",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.type",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.track.uid",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.track.name",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.track.type",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.track.domain.uid",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.track.domain.name",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.track.domain.domain-type",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.action.uid",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.action.name",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.action.type",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.action.domain.uid",
+                    "data_path": "action_result.data.*.action.domain.domain-type",
                     "data_type": "string"
                 },
                 {
@@ -390,163 +369,44 @@
                     "data_type": "string"
                 },
                 {
-                    "data_path": "action_result.data.*.action.domain.domain-type",
+                    "data_path": "action_result.data.*.action.domain.uid",
                     "data_type": "string"
                 },
                 {
-                    "data_path": "action_result.data.*.domain.uid",
+                    "data_path": "action_result.data.*.action.name",
                     "data_type": "string"
                 },
                 {
-                    "data_path": "action_result.data.*.domain.name",
+                    "data_path": "action_result.data.*.destination.*.subnet4",
+                    "data_type": "string",
+                    "example_values": [
+                        "123.123.0.0"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.destination.*.subnet-mask",
+                    "data_type": "string",
+                    "example_values": [
+                        "255.255.0.0"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.destination.*.mask-length4",
+                    "data_type": "numeric",
+                    "example_values": [
+                        16
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.action.type",
                     "data_type": "string"
                 },
                 {
-                    "data_path": "action_result.data.*.domain.domain-type",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.source.*.uid",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.source.*.name",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.source.*.type",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.source.*.domain.uid",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.source.*.domain.name",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.source.*.domain.domain-type",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.enabled",
-                    "data_type": "boolean"
-                },
-                {
-                    "data_path": "action_result.data.*.service.*.uid",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.service.*.name",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.service.*.type",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.service.*.domain.uid",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.service.*.domain.name",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.service.*.domain.domain-type",
+                    "data_path": "action_result.data.*.action.uid",
                     "data_type": "string"
                 },
                 {
                     "data_path": "action_result.data.*.comments",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.meta-info.lock",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.meta-info.creator",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.meta-info.creation-time.posix",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.meta-info.creation-time.iso-8601",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.meta-info.last-modifier",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.meta-info.last-modify-time.posix",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.meta-info.last-modify-time.iso-8601",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.meta-info.validation-state",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.install-on.*.uid",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.install-on.*.name",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.install-on.*.type",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.install-on.*.domain.uid",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.install-on.*.domain.name",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.install-on.*.domain.domain-type",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.data-negate",
-                    "data_type": "boolean"
-                },
-                {
-                    "data_path": "action_result.data.*.destination.*.uid",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.destination.*.name",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.destination.*.type",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.destination.*.domain.uid",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.destination.*.domain.name",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.destination.*.domain.domain-type",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.track-alert",
                     "data_type": "string"
                 },
                 {
@@ -562,11 +422,139 @@
                     "data_type": "string"
                 },
                 {
-                    "data_path": "action_result.data.*.source-negate",
+                    "data_path": "action_result.data.*.data-direction",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.data-negate",
                     "data_type": "boolean"
                 },
                 {
-                    "data_path": "action_result.data.*.data-direction",
+                    "data_path": "action_result.data.*.data.*.domain.domain-type",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.domain.name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.domain.uid",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.type",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.uid",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.destination-negate",
+                    "data_type": "boolean"
+                },
+                {
+                    "data_path": "action_result.data.*.destination.*.domain.domain-type",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.destination.*.domain.name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.destination.*.domain.uid",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.destination.*.name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.destination.*.type",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.destination.*.uid",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.domain.domain-type",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.domain.name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.domain.uid",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.enabled",
+                    "data_type": "boolean"
+                },
+                {
+                    "data_path": "action_result.data.*.install-on.*.domain.domain-type",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.install-on.*.domain.name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.install-on.*.domain.uid",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.install-on.*.name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.install-on.*.type",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.install-on.*.uid",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.meta-info.creation-time.iso-8601",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.meta-info.creation-time.posix",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.meta-info.creator",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.meta-info.last-modifier",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.meta-info.last-modify-time.iso-8601",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.meta-info.last-modify-time.posix",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.meta-info.lock",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.meta-info.validation-state",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.name",
                     "data_type": "string"
                 },
                 {
@@ -574,57 +562,312 @@
                     "data_type": "boolean"
                 },
                 {
-                    "data_path": "action_result.data.*.action-settings.enable-identity-captive-portal",
-                    "data_type": "boolean"
-                },
-                {
-                    "data_path": "action_result.data.*.destination-negate",
-                    "data_type": "boolean"
-                },
-                {
-                    "data_path": "action_result.status",
-                    "data_type": "string",
-                    "column_name": "Status",
-                    "column_order": 3
-                },
-                {
-                    "data_path": "action_result.message",
+                    "data_path": "action_result.data.*.service.*.domain.domain-type",
                     "data_type": "string"
                 },
                 {
-                    "data_path": "action_result.parameter.ip",
-                    "data_type": "string",
-                    "column_name": "IP",
-                    "column_order": 0,
-                    "contains": [
-                        "ip"
-                    ]
+                    "data_path": "action_result.data.*.service.*.domain.name",
+                    "data_type": "string"
                 },
                 {
-                    "data_path": "action_result.parameter.layer",
-                    "data_type": "string",
-                    "column_name": "Layer",
-                    "column_order": 2,
-                    "contains": [
-                        "check point layer"
-                    ]
+                    "data_path": "action_result.data.*.service.*.domain.uid",
+                    "data_type": "string"
                 },
                 {
-                    "data_path": "action_result.parameter.policy",
+                    "data_path": "action_result.data.*.service.*.name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.service.*.type",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.service.*.uid",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.source-negate",
+                    "data_type": "boolean"
+                },
+                {
+                    "data_path": "action_result.data.*.source.*.domain.domain-type",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.source.*.domain.name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.source.*.domain.uid",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.source.*.name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.source.*.type",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.source.*.uid",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.time.*.domain.domain-type",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.time.*.domain.name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.time.*.domain.uid",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.time.*.name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.time.*.type",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.time.*.uid",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.track-alert",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.track.domain.domain-type",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.track.domain.name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.track.domain.uid",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.track.name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.track.type",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.track.uid",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.type",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.uid",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.vpn.*.domain.domain-type",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.vpn.*.domain.name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.vpn.*.domain.uid",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.vpn.*.name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.vpn.*.type",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.vpn.*.uid",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.summary",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.message",
                     "data_type": "string",
-                    "column_name": "Policy",
-                    "column_order": 1,
-                    "contains": [
-                        "check point policy"
+                    "example_values": [
+                        "Successfully blocked IP"
                     ]
                 },
                 {
                     "data_path": "summary.total_objects",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
                 },
                 {
                     "data_path": "summary.total_objects_successful",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.layer",
+                    "data_type": "string",
+                    "example_values": [
+                        "f5cec687-05e5-4573-b1dc-08119f24cbc9"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.track.type.uid",
+                    "data_type": "string",
+                    "example_values": [
+                        "29e53e3d-23bf-48fe-b6b1-d59bd88036f9"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.track.type.name",
+                    "data_type": "string",
+                    "example_values": [
+                        "None"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.track.type.type",
+                    "data_type": "string",
+                    "example_values": [
+                        "Track"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.track.type.domain.uid",
+                    "data_type": "string",
+                    "example_values": [
+                        "a0bbbc99-adef-4ef8-bb6d-defdefdefdef"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.track.type.domain.name",
+                    "data_type": "string",
+                    "example_values": [
+                        "Check Point Data"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.track.type.domain.domain-type",
+                    "data_type": "string",
+                    "example_values": [
+                        "data domain"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.track.alert",
+                    "data_type": "string",
+                    "example_values": [
+                        "none"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.track.accounting",
+                    "data_type": "boolean",
+                    "example_values": [
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.track.per-session",
+                    "data_type": "boolean",
+                    "example_values": [
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.track.per-connection",
+                    "data_type": "boolean",
+                    "example_values": [
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.track.enable-firewall-session",
+                    "data_type": "boolean",
+                    "example_values": [
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.content.*.uid",
+                    "data_type": "string",
+                    "example_values": [
+                        "97aeb369-9aea-11d5-bd16-0090272ccb30"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.content.*.name",
+                    "data_type": "string",
+                    "example_values": [
+                        "Any"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.content.*.type",
+                    "data_type": "string",
+                    "example_values": [
+                        "CpmiAnyObject"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.content.*.domain.uid",
+                    "data_type": "string",
+                    "example_values": [
+                        "a0bbbc99-adef-4ef8-bb6d-defdefdefdef"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.content.*.domain.name",
+                    "data_type": "string",
+                    "example_values": [
+                        "Check Point Data"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.content.*.domain.domain-type",
+                    "data_type": "string",
+                    "example_values": [
+                        "data domain"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.destination.*.ipv4-address",
+                    "data_type": "string",
+                    "example_values": [
+                        "1.1.1.1"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.content-negate",
+                    "data_type": "boolean",
+                    "example_values": [
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.content-direction",
+                    "data_type": "string",
+                    "example_values": [
+                        "any"
+                    ]
                 }
             ],
             "versions": "EQ(*)"
@@ -677,35 +920,15 @@
             },
             "output": [
                 {
-                    "data_path": "action_result.data.*.message",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.status",
-                    "data_type": "string",
-                    "column_name": "Status",
-                    "column_order": 3
-                },
-                {
-                    "data_path": "action_result.message",
-                    "data_type": "string"
-                },
-                {
                     "data_path": "action_result.parameter.ip",
                     "data_type": "string",
                     "column_name": "IP",
                     "column_order": 0,
                     "contains": [
                         "ip"
-                    ]
-                },
-                {
-                    "data_path": "action_result.parameter.layer",
-                    "data_type": "string",
-                    "column_name": "Layer",
-                    "column_order": 2,
-                    "contains": [
-                        "check point layer"
+                    ],
+                    "example_values": [
+                        "1.1.1.1"
                     ]
                 },
                 {
@@ -715,15 +938,61 @@
                     "column_order": 1,
                     "contains": [
                         "check point policy"
+                    ],
+                    "example_values": [
+                        "standard"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.layer",
+                    "data_type": "string",
+                    "column_name": "Layer",
+                    "column_order": 2,
+                    "contains": [
+                        "check point layer"
+                    ],
+                    "example_values": [
+                        "network"
+                    ]
+                },
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "column_name": "Status",
+                    "column_order": 3,
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.message",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.summary",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "example_values": [
+                        "Successfully unblocked IP"
                     ]
                 },
                 {
                     "data_path": "summary.total_objects",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
                 },
                 {
                     "data_path": "summary.total_objects_successful",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
                 }
             ],
             "versions": "EQ(*)"
@@ -743,10 +1012,11 @@
             },
             "output": [
                 {
-                    "data_path": "action_result.data.*.to",
-                    "data_type": "numeric",
+                    "data_path": "action_result.status",
+                    "data_type": "string",
                     "example_values": [
-                        4
+                        "success",
+                        "failed"
                     ]
                 },
                 {
@@ -757,10 +1027,27 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.total",
-                    "data_type": "numeric",
+                    "data_path": "action_result.data.*.objects.*.domain.domain-type",
+                    "data_type": "string",
                     "example_values": [
-                        4
+                        "domain"
+                    ],
+                    "contains": [
+                        "domain"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.objects.*.domain.name",
+                    "data_type": "string",
+                    "example_values": [
+                        "SMC User"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.objects.*.domain.uid",
+                    "data_type": "string",
+                    "example_values": [
+                        "41e821a0-3720-11e3-aa6e-0800200c9fde"
                     ]
                 },
                 {
@@ -779,37 +1066,6 @@
                     "column_order": 1,
                     "example_values": [
                         "Host_127.0.0.1"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.objects.*.type",
-                    "data_type": "string",
-                    "example_values": [
-                        "host"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.objects.*.domain.uid",
-                    "data_type": "string",
-                    "example_values": [
-                        "41e821a0-3720-11e3-aa6e-0800200c9fde"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.objects.*.domain.name",
-                    "data_type": "string",
-                    "example_values": [
-                        "SMC User"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.objects.*.domain.domain-type",
-                    "data_type": "string",
-                    "example_values": [
-                        "domain"
-                    ],
-                    "contains": [
-                        "domain"
                     ]
                 },
                 {
@@ -834,11 +1090,29 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.status",
+                    "data_path": "action_result.data.*.objects.*.type",
                     "data_type": "string",
                     "example_values": [
-                        "success"
+                        "host"
                     ]
+                },
+                {
+                    "data_path": "action_result.data.*.to",
+                    "data_type": "numeric",
+                    "example_values": [
+                        4
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.total",
+                    "data_type": "numeric",
+                    "example_values": [
+                        4
+                    ]
+                },
+                {
+                    "data_path": "action_result.summary",
+                    "data_type": "string"
                 },
                 {
                     "data_path": "action_result.message",
@@ -860,13 +1134,20 @@
                     "example_values": [
                         1
                     ]
+                },
+                {
+                    "data_path": "action_result.summary.Total number of hosts",
+                    "data_type": "numeric",
+                    "example_values": [
+                        9
+                    ]
                 }
             ],
             "versions": "EQ(*)"
         },
         {
             "action": "add host",
-            "description": "Add host ",
+            "description": "Add host",
             "verbose": "The <b>ip</b> parameter supports the following formats:<ul><li>IPv4: For example 123.123.123.123</li><li>IPv6: For example 2001:0db8:0000:0000:0000:ff00:0042:7879</li></ul>This action will always prioritize using the <b>ip</b> parameter unless <b>ipv4</b> and/or <b>ipv6</b> parameters are specified. If both ipv4 and ipv6 addresses are required, use the corresponding parameters explicitly.",
             "type": "correct",
             "identifier": "add_host",
@@ -876,9 +1157,12 @@
                 "name": {
                     "description": "Object/host name (must be unique in the domain)",
                     "data_type": "string",
-                    "primary": true,
                     "required": true,
-                    "order": 0
+                    "order": 0,
+                    "primary": true,
+                    "contains": [
+                        "check point host name"
+                    ]
                 },
                 "ip": {
                     "description": "IPv4 or IPv6 address to add (if both addresses are required use ipv4 and ipv6 fields explicitly)",
@@ -888,7 +1172,6 @@
                         "ipv6"
                     ],
                     "primary": true,
-                    "required": false,
                     "order": 1
                 },
                 "ipv4": {
@@ -898,7 +1181,6 @@
                         "ip"
                     ],
                     "primary": true,
-                    "required": false,
                     "order": 2
                 },
                 "ipv6": {
@@ -908,8 +1190,17 @@
                         "ipv6"
                     ],
                     "primary": true,
-                    "required": false,
                     "order": 3
+                },
+                "comments": {
+                    "description": "Comments string to add",
+                    "data_type": "string",
+                    "order": 4
+                },
+                "groups": {
+                    "description": "Comma-separated list of group identifiers",
+                    "data_type": "string",
+                    "order": 5
                 }
             },
             "render": {
@@ -920,12 +1211,102 @@
             },
             "output": [
                 {
-                    "data_path": "action_result.data.*.uid",
+                    "data_path": "action_result.status",
                     "data_type": "string",
                     "example_values": [
-                        "e1485577-3f1d-4ec2-89fc-a98747146d75",
-                        "b87fa85f-856d-4709-b3cf-05507f5511e7",
-                        "28c38771-4bf2-46fe-a402-f7dc29707d34"
+                        "success",
+                        "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.comments",
+                    "data_type": "string",
+                    "example_values": [
+                        "Adding Test user"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.groups",
+                    "data_type": "string",
+                    "example_values": [
+                        "test group"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.ip",
+                    "data_type": "string",
+                    "example_values": [
+                        "192.0.2.1"
+                    ],
+                    "contains": [
+                        "ip",
+                        "ipv6"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.ipv4",
+                    "data_type": "string",
+                    "example_values": [
+                        "192.0.2.1"
+                    ],
+                    "contains": [
+                        "ip"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.ipv6",
+                    "data_type": "string",
+                    "example_values": [
+                        "2001:0db8:0000:0000:0000:ff00:0042:7879"
+                    ],
+                    "contains": [
+                        "ipv6"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.name",
+                    "data_type": "string",
+                    "example_values": [
+                        "test host ipv6",
+                        "new host"
+                    ],
+                    "contains": [
+                        "check point host name"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.color",
+                    "data_type": "string",
+                    "example_values": [
+                        "black"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.comments",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.domain.domain-type",
+                    "data_type": "string",
+                    "example_values": [
+                        "domain"
+                    ],
+                    "contains": [
+                        "domain"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.domain.name",
+                    "data_type": "string",
+                    "example_values": [
+                        "SMC User"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.domain.uid",
+                    "data_type": "string",
+                    "example_values": [
+                        "41e821a0-3720-11e3-aa6e-0800200c9fde"
                     ]
                 },
                 {
@@ -938,11 +1319,130 @@
                 {
                     "data_path": "action_result.data.*.name",
                     "data_type": "string",
-                    "column_name": "Host name",
+                    "column_name": "Host Name",
                     "column_order": 0,
                     "example_values": [
                         "test host ipv6",
                         "new host"
+                    ],
+                    "contains": [
+                        "check point host name"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.uid",
+                    "data_type": "string",
+                    "example_values": [
+                        "e1485577-3f1d-4ec2-89fc-a98747146d75",
+                        "b87fa85f-856d-4709-b3cf-05507f5511e7",
+                        "28c38771-4bf2-46fe-a402-f7dc29707d34"
+                    ],
+                    "column_name": "Host UID",
+                    "column_order": 1,
+                    "contains": [
+                        "check point host uid"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.ipv4-address",
+                    "data_type": "string",
+                    "column_name": "IPV4",
+                    "column_order": 2,
+                    "example_values": [
+                        "192.0.2.1"
+                    ],
+                    "contains": [
+                        "ip"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.ipv6-address",
+                    "data_type": "string",
+                    "column_name": "IPV6",
+                    "column_order": 3,
+                    "example_values": [
+                        "2001:db8::ff00:42:7879"
+                    ],
+                    "contains": [
+                        "ipv6"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.meta-info.creation-time.iso-8601",
+                    "data_type": "string",
+                    "example_values": [
+                        "2021-10-27T13:09-0700",
+                        "2021-10-27T12:37-0700",
+                        "2021-10-27T12:51-0700"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.meta-info.creation-time.posix",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1635365349344,
+                        1635363435459,
+                        1635364300075
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.meta-info.creator",
+                    "data_type": "string",
+                    "example_values": [
+                        "admin"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.meta-info.last-modifier",
+                    "data_type": "string",
+                    "example_values": [
+                        "admin"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.meta-info.last-modify-time.iso-8601",
+                    "data_type": "string",
+                    "example_values": [
+                        "2021-10-27T13:09-0700",
+                        "2021-10-27T12:37-0700",
+                        "2021-10-27T12:51-0700"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.meta-info.last-modify-time.posix",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1635365349344,
+                        1635363435459,
+                        1635364300075
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.meta-info.lock",
+                    "data_type": "string",
+                    "example_values": [
+                        "unlocked"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.meta-info.validation-state",
+                    "data_type": "string",
+                    "example_values": [
+                        "ok"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.nat-settings.auto-rule",
+                    "data_type": "boolean",
+                    "example_values": [
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.read-only",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true
                     ]
                 },
                 {
@@ -950,6 +1450,891 @@
                     "data_type": "string",
                     "example_values": [
                         "host"
+                    ]
+                },
+                {
+                    "data_path": "action_result.summary",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "example_values": [
+                        "Successfully added host"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.groups.*.uid",
+                    "data_type": "string",
+                    "example_values": [
+                        "86b77630-acc5-4fa4-9c5e-e88a32a6b317"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.groups.*.name",
+                    "data_type": "string",
+                    "example_values": [
+                        "Phantom Group 123"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.groups.*.type",
+                    "data_type": "string",
+                    "example_values": [
+                        "group"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.groups.*.domain.uid",
+                    "data_type": "string",
+                    "example_values": [
+                        "41e821a0-3720-11e3-aa6e-0800200c9fde"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.groups.*.domain.name",
+                    "data_type": "string",
+                    "example_values": [
+                        "SMC User"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.groups.*.domain.domain-type",
+                    "data_type": "string",
+                    "example_values": [
+                        "domain"
+                    ]
+                }
+            ],
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "delete host",
+            "description": "Delete host",
+            "verbose": "To delete a host, either specify <b>uid</b> or <b>name</b>. If provided both, this action will prioritize the <b>uid</b> parameter.",
+            "type": "correct",
+            "identifier": "delete_host",
+            "undo": "add host",
+            "read_only": false,
+            "parameters": {
+                "uid": {
+                    "description": "Host's unique identifier",
+                    "data_type": "string",
+                    "order": 0,
+                    "primary": true,
+                    "contains": [
+                        "check point host uid"
+                    ]
+                },
+                "name": {
+                    "description": "Object/host name",
+                    "data_type": "string",
+                    "order": 1,
+                    "primary": true,
+                    "contains": [
+                        "check point host name"
+                    ]
+                }
+            },
+            "render": {
+                "type": "table",
+                "width": 12,
+                "height": 5,
+                "title": "Delete Host"
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.uid",
+                    "data_type": "string",
+                    "column_name": "Host UID",
+                    "column_order": 0,
+                    "example_values": [
+                        "7a20fab7-f411-4a1b-a541-58c6d7596934"
+                    ],
+                    "contains": [
+                        "check point host uid"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.name",
+                    "data_type": "string",
+                    "column_name": "Host Name",
+                    "column_order": 1,
+                    "example_values": [
+                        "test host ipv6 ipv4"
+                    ],
+                    "contains": [
+                        "check point host name"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.message",
+                    "data_type": "string",
+                    "example_values": [
+                        "OK"
+                    ]
+                },
+                {
+                    "data_path": "action_result.summary",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "example_values": [
+                        "Successfully deleted host"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                }
+            ],
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "add network",
+            "description": "Create network object",
+            "type": "contain",
+            "verbose": "For add a network, You must need to specify one <b>subnet</b> and a <b>subnet mask length</b> or <b>subnet mask</b> parameter.",
+            "undo": "delete network",
+            "identifier": "add_network",
+            "read_only": false,
+            "parameters": {
+                "name": {
+                    "description": "Object/network name (must be unique in the domain)",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": true,
+                    "contains": [
+                        "check point network name"
+                    ],
+                    "order": 0
+                },
+                "subnet": {
+                    "description": "IPv4 or IPv6 network address. If both addresses are required use subnet4 and subnet6 fields explicitly",
+                    "data_type": "string",
+                    "contains": [
+                        "ip",
+                        "ipv6"
+                    ],
+                    "primary": true,
+                    "order": 1
+                },
+                "subnet_v4": {
+                    "description": "IPv4 network address",
+                    "data_type": "string",
+                    "contains": [
+                        "ip"
+                    ],
+                    "primary": true,
+                    "order": 2
+                },
+                "subnet_v6": {
+                    "description": "IPv6 network address",
+                    "data_type": "string",
+                    "contains": [
+                        "ipv6"
+                    ],
+                    "primary": true,
+                    "order": 3
+                },
+                "subnet_mask_length": {
+                    "description": "IPv4 or IPv6 network mask length. If both masks are required use mask-length4 and mask-length6 fields explicitly. Instead of IPv4 mask length it is possible to specify IPv4 mask itself in subnet-mask field",
+                    "data_type": "string",
+                    "order": 4
+                },
+                "subnet_mask_length_v4": {
+                    "description": "IPv4 network mask length",
+                    "data_type": "string",
+                    "order": 5
+                },
+                "subnet_mask_length_v6": {
+                    "description": "IPv6 network mask length",
+                    "data_type": "string",
+                    "order": 6
+                },
+                "subnet_mask": {
+                    "description": "IPv4 network mask",
+                    "data_type": "string",
+                    "order": 7
+                },
+                "groups": {
+                    "description": "Comma-separated list of group names or uids",
+                    "data_type": "string",
+                    "order": 8
+                },
+                "comments": {
+                    "description": "Comments string to add",
+                    "data_type": "string",
+                    "order": 9
+                }
+            },
+            "render": {
+                "type": "table",
+                "width": 12,
+                "height": 5,
+                "title": "Add Network"
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.comments",
+                    "data_type": "string",
+                    "example_values": [
+                        "Adding new network"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.groups",
+                    "data_type": "string",
+                    "example_values": [
+                        "test group"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.name",
+                    "data_type": "string",
+                    "example_values": [
+                        "test host ipv6",
+                        "new host"
+                    ],
+                    "contains": [
+                        "check point network name"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.subnet",
+                    "data_type": "string",
+                    "contains": [
+                        "ip",
+                        "ipv6"
+                    ],
+                    "example_values": [
+                        "10.10.10.0"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.icon",
+                    "data_type": "string",
+                    "example_values": [
+                        "NetworkObjects/network"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.name",
+                    "data_type": "string",
+                    "column_name": "Network Name",
+                    "column_order": 0,
+                    "example_values": [
+                        "new network"
+                    ],
+                    "contains": [
+                        "check point network name"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.uid",
+                    "data_type": "string",
+                    "example_values": [
+                        "e1485577-3f1d-4ec2-89fc-a98747146d75",
+                        "b87fa85f-856d-4709-b3cf-05507f5511e7",
+                        "28c38771-4bf2-46fe-a402-f7dc29707d34"
+                    ],
+                    "column_name": "UID",
+                    "column_order": 1,
+                    "contains": [
+                        "check point network uid"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.subnet4",
+                    "data_type": "string",
+                    "example_values": [
+                        "192.0.2.0"
+                    ],
+                    "column_name": "IPV4 Subnet",
+                    "column_order": 2,
+                    "contains": [
+                        "check point network uid"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.subnet6",
+                    "data_type": "string",
+                    "example_values": [
+                        "2001:d00::"
+                    ],
+                    "column_name": "IPV6 Subnet",
+                    "column_order": 3
+                },
+                {
+                    "data_path": "action_result.data.*.broadcast",
+                    "data_type": "string",
+                    "example_values": [
+                        "allow"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.subnet-mask",
+                    "data_type": "string",
+                    "example_values": [
+                        "255.255.255.0"
+                    ],
+                    "column_name": "IPV4 Subnet Mask",
+                    "column_order": 4
+                },
+                {
+                    "data_path": "action_result.data.*.mask-length4",
+                    "data_type": "numeric",
+                    "example_values": [
+                        24
+                    ],
+                    "column_name": "IPV4 Subnet Mask Length",
+                    "column_order": 5
+                },
+                {
+                    "data_path": "action_result.data.*.mask-length6",
+                    "data_type": "numeric",
+                    "example_values": [
+                        24
+                    ],
+                    "column_name": "IPV6 Subnet Mask Length",
+                    "column_order": 6
+                },
+                {
+                    "data_path": "action_result.parameter.subnet_mask",
+                    "data_type": "string",
+                    "example_values": [
+                        "255.255.0.0"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.subnet_mask_length",
+                    "data_type": "numeric",
+                    "example_values": [
+                        24
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.subnet_mask_length_v4",
+                    "data_type": "numeric",
+                    "example_values": [
+                        24
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.subnet_mask_length_v6",
+                    "data_type": "numeric",
+                    "example_values": [
+                        24
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.subnet_v4",
+                    "data_type": "string",
+                    "example_values": [
+                        "8.8.8.8"
+                    ],
+                    "contains": [
+                        "ip"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.subnet_v6",
+                    "data_type": "string",
+                    "example_values": [
+                        "2001:0db8:0000:0000:0000:ff00:0042:7879"
+                    ],
+                    "contains": [
+                        "ipv6"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.color",
+                    "data_type": "string",
+                    "example_values": [
+                        "black"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.comments",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.domain.domain-type",
+                    "data_type": "string",
+                    "example_values": [
+                        "domain"
+                    ],
+                    "contains": [
+                        "domain"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.domain.name",
+                    "data_type": "string",
+                    "example_values": [
+                        "SMC User"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.ipv6-address",
+                    "data_type": "string",
+                    "example_values": [
+                        "2001:db8::ff00:42:7879"
+                    ],
+                    "contains": [
+                        "ipv6"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.domain.uid",
+                    "data_type": "string",
+                    "example_values": [
+                        "41e821a0-3720-11e3-aa6e-0800200c9fde"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.meta-info.creation-time.iso-8601",
+                    "data_type": "string",
+                    "example_values": [
+                        "2021-10-27T13:09-0700",
+                        "2021-10-27T12:37-0700",
+                        "2021-10-27T12:51-0700"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.meta-info.creation-time.posix",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1635365349344,
+                        1635363435459,
+                        1635364300075
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.meta-info.creator",
+                    "data_type": "string",
+                    "example_values": [
+                        "admin"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.meta-info.last-modifier",
+                    "data_type": "string",
+                    "example_values": [
+                        "admin"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.meta-info.last-modify-time.iso-8601",
+                    "data_type": "string",
+                    "example_values": [
+                        "2021-10-27T13:09-0700",
+                        "2021-10-27T12:37-0700",
+                        "2021-10-27T12:51-0700"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.meta-info.last-modify-time.posix",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1635365349344,
+                        1635363435459,
+                        1635364300075
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.meta-info.lock",
+                    "data_type": "string",
+                    "example_values": [
+                        "unlocked"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.meta-info.validation-state",
+                    "data_type": "string",
+                    "example_values": [
+                        "ok"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.nat-settings.auto-rule",
+                    "data_type": "boolean",
+                    "example_values": [
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.read-only",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.type",
+                    "data_type": "string",
+                    "example_values": [
+                        "network"
+                    ]
+                },
+                {
+                    "data_path": "action_result.summary",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "example_values": [
+                        "Successfully added host"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.groups.*.uid",
+                    "data_type": "string",
+                    "example_values": [
+                        "afa45412-8030-4274-8ae5-f3fe61cd8b7c"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.groups.*.name",
+                    "data_type": "string",
+                    "example_values": [
+                        "group phantom smart console"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.groups.*.type",
+                    "data_type": "string",
+                    "example_values": [
+                        "group"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.groups.*.domain.uid",
+                    "data_type": "string",
+                    "example_values": [
+                        "41e821a0-3720-11e3-aa6e-0800200c9fde"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.groups.*.domain.name",
+                    "data_type": "string",
+                    "example_values": [
+                        "SMC User"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.groups.*.domain.domain-type",
+                    "data_type": "string",
+                    "example_values": [
+                        "domain"
+                    ]
+                }
+            ],
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "delete network",
+            "description": "Delete network object",
+            "type": "contain",
+            "verbose": "To delete a network, either specify <b>uid</b> or <b>name</b>. If provided both, this action will prioritize the <b>uid</b> parameter.",
+            "undo": "add network",
+            "identifier": "delete_network",
+            "read_only": false,
+            "parameters": {
+                "name": {
+                    "description": "Object/host name to be deleted",
+                    "data_type": "string",
+                    "order": 0,
+                    "primary": true,
+                    "contains": [
+                        "check point network name"
+                    ]
+                },
+                "uid": {
+                    "description": "Object/host uid to be deleted",
+                    "data_type": "string",
+                    "order": 1,
+                    "primary": true,
+                    "contains": [
+                        "check point network uid"
+                    ]
+                }
+            },
+            "render": {
+                "type": "table",
+                "width": 12,
+                "height": 5,
+                "title": "Delete Network"
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "column_name": "Status",
+                    "column_order": 0,
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.message",
+                    "data_type": "string",
+                    "example_values": [
+                        "OK"
+                    ]
+                },
+                {
+                    "data_path": "action_result.summary",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "example_values": [
+                        "Successfully deleted network"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.name",
+                    "data_type": "string",
+                    "column_name": "Name",
+                    "column_order": 1,
+                    "example_values": [
+                        "Test Network"
+                    ],
+                    "contains": [
+                        "check point network name"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.uid",
+                    "data_type": "string",
+                    "column_name": "UID",
+                    "column_order": 2,
+                    "example_values": [
+                        "e1485577-3f1d-4ec2-89fc-a98747146d75"
+                    ],
+                    "contains": [
+                        "check point network uid"
+                    ]
+                }
+            ],
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "update group members",
+            "description": "Update group members",
+            "type": "generic",
+            "verbose": "Either specify <b>uid</b> or <b>name</b>. If provided both, this action will prioritize the <b>uid</b> parameter.",
+            "identifier": "update_group_members",
+            "read_only": false,
+            "parameters": {
+                "uid": {
+                    "description": "Groups unique identifier",
+                    "data_type": "string",
+                    "order": 0
+                },
+                "name": {
+                    "description": "Object/group name",
+                    "data_type": "string",
+                    "order": 1
+                },
+                "action": {
+                    "description": "Type of operation to perform",
+                    "data_type": "string",
+                    "required": true,
+                    "order": 2,
+                    "value_list": [
+                        "add",
+                        "remove"
+                    ]
+                },
+                "members": {
+                    "description": "Comma-separated list of network objects identified by name or uid",
+                    "data_type": "string",
+                    "required": true,
+                    "order": 3
+                }
+            },
+            "render": {
+                "type": "table",
+                "width": 12,
+                "height": 5,
+                "title": "Update Group Members"
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.action",
+                    "data_type": "string",
+                    "example_values": [
+                        "add",
+                        "remove"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.members",
+                    "data_type": "string",
+                    "example_values": [
+                        "Test - 1.1.1.1/32"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.uid",
+                    "data_type": "string",
+                    "example_values": [
+                        "7a20fab7-f411-4a1b-a541-58c6d7596934"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.name",
+                    "data_type": "string",
+                    "example_values": [
+                        "test group"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.members",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.message",
+                    "data_type": "string",
+                    "example_values": [
+                        "OK"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.type",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.uid",
+                    "data_type": "string",
+                    "column_name": "Group UID",
+                    "column_order": 0,
+                    "example_values": [
+                        "7a20fab7-f411-4a1b-a541-58c6d7596934"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.name",
+                    "data_type": "string",
+                    "column_name": "Group Name",
+                    "column_order": 1,
+                    "example_values": [
+                        "test group"
+                    ]
+                },
+                {
+                    "data_path": "action_result.summary",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "example_values": [
+                        "Successfully deleted host"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.icon",
+                    "data_type": "string",
+                    "example_values": [
+                        "General/group"
                     ]
                 },
                 {
@@ -978,17 +2363,60 @@
                     "data_type": "string",
                     "example_values": [
                         "domain"
-                    ],
-                    "contains": [
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.members.*.uid",
+                    "data_type": "string",
+                    "example_values": [
+                        "eb6a6562-4ed5-4051-9743-f707c86cd505"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.members.*.name",
+                    "data_type": "string",
+                    "example_values": [
+                        "phantom - 11.1.1.11/32"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.members.*.type",
+                    "data_type": "string",
+                    "example_values": [
+                        "host"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.members.*.domain.uid",
+                    "data_type": "string",
+                    "example_values": [
+                        "41e821a0-3720-11e3-aa6e-0800200c9fde"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.members.*.domain.name",
+                    "data_type": "string",
+                    "example_values": [
+                        "SMC User"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.members.*.domain.domain-type",
+                    "data_type": "string",
+                    "example_values": [
                         "domain"
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.comments",
+                    "data_path": "action_result.data.*.members.*.ipv4-address",
                     "data_type": "string",
                     "example_values": [
-                        ""
+                        "11.1.1.11"
                     ]
+                },
+                {
+                    "data_path": "action_result.data.*.comments",
+                    "data_type": "string"
                 },
                 {
                     "data_path": "action_result.data.*.meta-info.lock",
@@ -1008,18 +2436,14 @@
                     "data_path": "action_result.data.*.meta-info.creation-time.posix",
                     "data_type": "numeric",
                     "example_values": [
-                        1635365349344,
-                        1635363435459,
-                        1635364300075
+                        1646288981836
                     ]
                 },
                 {
                     "data_path": "action_result.data.*.meta-info.creation-time.iso-8601",
                     "data_type": "string",
                     "example_values": [
-                        "2021-10-27T13:09-0700",
-                        "2021-10-27T12:37-0700",
-                        "2021-10-27T12:51-0700"
+                        "2022-03-03T11:59+0530"
                     ]
                 },
                 {
@@ -1033,18 +2457,14 @@
                     "data_path": "action_result.data.*.meta-info.last-modify-time.posix",
                     "data_type": "numeric",
                     "example_values": [
-                        1635365349344,
-                        1635363435459,
-                        1635364300075
+                        1646675997105
                     ]
                 },
                 {
                     "data_path": "action_result.data.*.meta-info.last-modify-time.iso-8601",
                     "data_type": "string",
                     "example_values": [
-                        "2021-10-27T13:09-0700",
-                        "2021-10-27T12:37-0700",
-                        "2021-10-27T12:51-0700"
+                        "2022-03-07T23:29+0530"
                     ]
                 },
                 {
@@ -1056,194 +2476,9 @@
                 },
                 {
                     "data_path": "action_result.data.*.read-only",
-                    "data_type": "numeric",
+                    "data_type": "boolean",
                     "example_values": [
                         true
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.ipv6-address",
-                    "data_type": "string",
-                    "column_name": "IPv6",
-                    "column_order": 2,
-                    "example_values": [
-                        "2001:db8::ff00:42:7879"
-                    ],
-                    "contains": [
-                        "ipv6"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.nat-settings.auto-rule",
-                    "data_type": "numeric",
-                    "example_values": [
-                        false
-                    ]
-                },
-                {
-                    "data_path": "action_result.status",
-                    "data_type": "string",
-                    "example_values": [
-                        "success"
-                    ]
-                },
-                {
-                    "data_path": "action_result.message",
-                    "data_type": "string",
-                    "example_values": [
-                        "Successfully added host"
-                    ]
-                },
-                {
-                    "data_path": "action_result.parameter.ipv6",
-                    "data_type": "string",
-                    "example_values": [
-                        "2001:0db8:0000:0000:0000:ff00:0042:7879"
-                    ],
-                    "contains": [
-                        "ipv6"
-                    ]
-                },
-                {
-                    "data_path": "action_result.parameter.name",
-                    "data_type": "string",
-                    "example_values": [
-                        "test host ipv6",
-                        "new host"
-                    ]
-                },
-                {
-                    "data_path": "summary.total_objects",
-                    "data_type": "numeric",
-                    "example_values": [
-                        1
-                    ]
-                },
-                {
-                    "data_path": "summary.total_objects_successful",
-                    "data_type": "numeric",
-                    "example_values": [
-                        1
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.ipv4-address",
-                    "data_type": "string",
-                    "column_name": "IPv4",
-                    "column_order": 1,
-                    "example_values": [
-                        "192.0.2.1"
-                    ],
-                    "contains": [
-                        "ip"
-                    ]
-                },
-                {
-                    "data_path": "action_result.parameter.ip",
-                    "data_type": "string",
-                    "example_values": [
-                        "192.0.2.1"
-                    ],
-                    "contains": [
-                        "ip",
-                        "ipv6"
-                    ]
-                },
-                {
-                    "data_path": "action_result.parameter.ipv4",
-                    "data_type": "string",
-                    "example_values": [
-                        "192.0.2.1"
-                    ],
-                    "contains": [
-                        "ip"
-                    ]
-                }
-            ],
-            "versions": "EQ(*)"
-        },
-        {
-            "action": "delete host",
-            "description": "Delete host",
-            "verbose": "To delete a host, either specify <b>uid</b> or <b>name</b>. If provided both, this action will prioritize the <b>uid</b> parameter.",
-            "type": "correct",
-            "identifier": "delete_host",
-            "undo": "delete host",
-            "read_only": false,
-            "parameters": {
-                "uid": {
-                    "description": "Host's unique indentifier",
-                    "data_type": "string",
-                    "primary": true,
-                    "required": false,
-                    "order": 0
-                },
-                "name": {
-                    "description": "Object/host name (must be unique in the domain)",
-                    "data_type": "string",
-                    "primary": true,
-                    "required": false,
-                    "order": 1
-                }
-            },
-            "render": {
-                "type": "table",
-                "width": 12,
-                "height": 5,
-                "title": "Delete Host"
-            },
-            "output": [
-                {
-                    "data_path": "action_result.data.*.message",
-                    "data_type": "string",
-                    "example_values": [
-                        "OK"
-                    ]
-                },
-                {
-                    "data_path": "action_result.status",
-                    "data_type": "string",
-                    "example_values": [
-                        "success"
-                    ]
-                },
-                {
-                    "data_path": "action_result.message",
-                    "data_type": "string",
-                    "example_values": [
-                        "Successfully deleted host"
-                    ]
-                },
-                {
-                    "data_path": "action_result.parameter.uid",
-                    "data_type": "string",
-                    "column_name": "Host UID",
-                    "column_order": 0,
-                    "example_values": [
-                        "7a20fab7-f411-4a1b-a541-58c6d7596934"
-                    ]
-                },
-                {
-                    "data_path": "summary.total_objects",
-                    "data_type": "numeric",
-                    "example_values": [
-                        1
-                    ]
-                },
-                {
-                    "data_path": "summary.total_objects_successful",
-                    "data_type": "numeric",
-                    "example_values": [
-                        1
-                    ]
-                },
-                {
-                    "data_path": "action_result.parameter.name",
-                    "data_type": "string",
-                    "column_name": "Host Name",
-                    "column_order": 1,
-                    "example_values": [
-                        "test host ipv6 ipv4"
                     ]
                 }
             ],
@@ -1260,7 +2495,6 @@
                 "session_id": {
                     "description": "Session ID to log out from",
                     "data_type": "string",
-                    "primary": true,
                     "order": 0
                 }
             },
@@ -1282,19 +2516,27 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.message",
-                    "data_type": "string",
-                    "example_values": [
-                        "Successfully logged out of session",
-                        "Could not connect to Check Point:\nWrong session id. Session may be expired. Please check session id and resend the request."
-                    ]
-                },
-                {
                     "data_path": "action_result.parameter.session_id",
                     "data_type": "string",
                     "example_values": [
                         "Us2qnsKc5SGKglzjVqXGfUKIjNOOcZxl7HYINyq0Lz8",
                         "TMRsvIBQFDIFwpWQRLskhHD7XCP5pbgHzkmvlHORoOY"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.summary",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "example_values": [
+                        "Successfully logged out of session",
+                        "Could not connect to Check Point:\nWrong session id. Session may be expired. Please check session id and resend the request."
                     ]
                 },
                 {
@@ -1310,6 +2552,540 @@
                     "example_values": [
                         1,
                         0
+                    ]
+                }
+            ],
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "install policy",
+            "description": "Executes the install-policy on a given list of targets",
+            "type": "generic",
+            "identifier": "install_policy",
+            "read_only": false,
+            "parameters": {
+                "policy": {
+                    "description": "The name of the Policy Package to be installed",
+                    "data_type": "string",
+                    "required": true,
+                    "order": 0
+                },
+                "targets": {
+                    "description": "Comma-separated list of targets that may be identified by their name, or object unique identifier",
+                    "data_type": "string",
+                    "required": true,
+                    "order": 1
+                },
+                "access": {
+                    "description": "Set to be true in order to install the Access Control policy. By default, the value is true if Access Control policy is enabled on the input policy package, otherwise false",
+                    "data_type": "boolean",
+                    "order": 2
+                }
+            },
+            "render": {
+                "type": "table",
+                "width": 12,
+                "height": 5,
+                "title": "Install Policy"
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "column_name": "Status",
+                    "column_order": 0,
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.access",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.policy",
+                    "data_type": "string",
+                    "column_name": "Policy",
+                    "column_order": 1,
+                    "example_values": [
+                        "standard"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.targets",
+                    "data_type": "string",
+                    "column_name": "Targets",
+                    "column_order": 2,
+                    "example_values": [
+                        "gwg-123"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.task-id",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.summary",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "example_values": [
+                        "Successfully submitted policy installation"
+                    ]
+                }
+            ],
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "add user",
+            "description": "Create a new user based on a pre-built template",
+            "type": "generic",
+            "undo": "delete user",
+            "identifier": "add_user",
+            "read_only": false,
+            "parameters": {
+                "name": {
+                    "description": "The name of the user to be created. Must be unique in the domain",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": true,
+                    "contains": [
+                        "check point user name"
+                    ],
+                    "order": 0
+                },
+                "template": {
+                    "description": "User template name or UID",
+                    "data_type": "string",
+                    "required": true,
+                    "order": 1
+                },
+                "email": {
+                    "description": "User email",
+                    "data_type": "string",
+                    "order": 2
+                },
+                "phone_number": {
+                    "description": "User phone number",
+                    "data_type": "string",
+                    "order": 3
+                },
+                "comments": {
+                    "description": "Comments string",
+                    "data_type": "string",
+                    "order": 4
+                }
+            },
+            "render": {
+                "type": "table",
+                "width": 12,
+                "height": 5,
+                "title": "Add User"
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "column_name": "Status",
+                    "column_order": 0,
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.comments",
+                    "data_type": "string",
+                    "example_values": [
+                        "adding new user"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.email",
+                    "data_type": "string",
+                    "example_values": [
+                        "testuser@example.com"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.name",
+                    "data_type": "string",
+                    "example_values": [
+                        "test user"
+                    ],
+                    "contains": [
+                        "check point user name"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.phone_number",
+                    "data_type": "string",
+                    "example_values": [
+                        "1234567890"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.template",
+                    "data_type": "string",
+                    "example_values": [
+                        "default"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.email",
+                    "data_type": "string",
+                    "example_values": [
+                        "testuser@example.com"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.name",
+                    "data_type": "string",
+                    "column_name": "Name",
+                    "column_order": 1,
+                    "example_values": [
+                        "Test user"
+                    ],
+                    "contains": [
+                        "check point user name"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.type",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.uid",
+                    "data_type": "string",
+                    "column_name": "UID",
+                    "column_order": 2,
+                    "example_values": [
+                        "97aeb369-9aea-11d5-bd16-0090272ccb30"
+                    ],
+                    "contains": [
+                        "check point user uid"
+                    ]
+                },
+                {
+                    "data_path": "action_result.summary",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "example_values": [
+                        "Successfully created user"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.icon",
+                    "data_type": "string",
+                    "example_values": [
+                        "Objects/user"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.color",
+                    "data_type": "string",
+                    "example_values": [
+                        "black"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.domain.uid",
+                    "data_type": "string",
+                    "example_values": [
+                        "41e821a0-3720-11e3-aa6e-0800200c9fde"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.domain.name",
+                    "data_type": "string",
+                    "example_values": [
+                        "SMC User"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.domain.domain-type",
+                    "data_type": "string",
+                    "example_values": [
+                        "domain"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.to-hour",
+                    "data_type": "string",
+                    "example_values": [
+                        "23:59"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.comments",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.from-hour",
+                    "data_type": "string",
+                    "example_values": [
+                        "00:00"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.meta-info.lock",
+                    "data_type": "string",
+                    "example_values": [
+                        "unlocked"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.meta-info.creator",
+                    "data_type": "string",
+                    "example_values": [
+                        "admin"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.meta-info.creation-time.posix",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1646214033562
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.meta-info.creation-time.iso-8601",
+                    "data_type": "string",
+                    "example_values": [
+                        "2022-03-02T15:10+0530"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.meta-info.last-modifier",
+                    "data_type": "string",
+                    "example_values": [
+                        "admin"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.meta-info.last-modify-time.posix",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1646214033562
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.meta-info.last-modify-time.iso-8601",
+                    "data_type": "string",
+                    "example_values": [
+                        "2022-03-02T15:10+0530"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.meta-info.validation-state",
+                    "data_type": "string",
+                    "example_values": [
+                        "ok"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.read-only",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.encryption.ike",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.encryption.public-key",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.encryption.shared-secret",
+                    "data_type": "boolean",
+                    "example_values": [
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.connect-daily",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.expiration-date.posix",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1924885800000
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.expiration-date.iso-8601",
+                    "data_type": "string",
+                    "example_values": [
+                        "2030-12-31T00:00+0530"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.authentication-method",
+                    "data_type": "string",
+                    "example_values": [
+                        "undefined"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.phone-number",
+                    "data_type": "string",
+                    "example_values": [
+                        "1234567890"
+                    ]
+                }
+            ],
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "delete user",
+            "description": "Delete existing user",
+            "type": "generic",
+            "undo": "add user",
+            "verbose": "Either specify <b>uid</b> or <b>name</b>. If provided both, this action will prioritize the <b>uid</b> parameter.",
+            "identifier": "delete_user",
+            "read_only": false,
+            "parameters": {
+                "name": {
+                    "description": "Name of the user to be deleted",
+                    "data_type": "string",
+                    "primary": true,
+                    "contains": [
+                        "check point user name"
+                    ],
+                    "order": 0
+                },
+                "uid": {
+                    "description": "UID of the user to be deleted",
+                    "data_type": "string",
+                    "primary": true,
+                    "contains": [
+                        "check point user uid"
+                    ],
+                    "order": 1
+                }
+            },
+            "render": {
+                "type": "table",
+                "width": 12,
+                "height": 5,
+                "title": "Delete User"
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "column_name": "Status",
+                    "column_order": 0,
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.summary",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.message",
+                    "data_type": "string",
+                    "example_values": [
+                        "OK"
+                    ]
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "example_values": [
+                        "Successfully deleted user"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.name",
+                    "data_type": "string",
+                    "column_name": "Name",
+                    "column_order": 1,
+                    "example_values": [
+                        "Test user"
+                    ],
+                    "contains": [
+                        "check point user name"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.uid",
+                    "data_type": "string",
+                    "column_name": "UID",
+                    "column_order": 2,
+                    "example_values": [
+                        "28c38771-4bf2-46fe-a402-f7dc29707d34"
+                    ],
+                    "contains": [
+                        "check point user uid"
                     ]
                 }
             ],

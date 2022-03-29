@@ -295,7 +295,7 @@ action\_result\.summary | string |
 action\_result\.message | string | 
 summary\.total\_objects | numeric | 
 summary\.total\_objects\_successful | numeric | 
-action\_result\.summary\.Total number of hosts | numeric |   
+action\_result\.summary\.total\_number\_of\_hosts | numeric |   
 
 ## action: 'add host'
 Add host

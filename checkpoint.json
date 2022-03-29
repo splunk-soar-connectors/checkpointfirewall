@@ -1118,7 +1118,7 @@
                     "data_path": "action_result.message",
                     "data_type": "string",
                     "example_values": [
-                        "Successfully displayed hosts"
+                        "Successfully found 1 host"
                     ]
                 },
                 {
@@ -2027,7 +2027,7 @@
                     "data_path": "action_result.message",
                     "data_type": "string",
                     "example_values": [
-                        "Successfully added host"
+                        "Successfully added network"
                     ]
                 },
                 {
@@ -2313,7 +2313,7 @@
                     "data_path": "action_result.message",
                     "data_type": "string",
                     "example_values": [
-                        "Successfully deleted host"
+                        "Successfully updated group"
                     ]
                 },
                 {

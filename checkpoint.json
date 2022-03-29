@@ -31,7 +31,7 @@
             "data_type": "boolean",
             "description": "Verify server certificate",
             "order": 1,
-            "default": true
+            "default": false
         },
         "username": {
             "description": "Username",
@@ -1136,7 +1136,7 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.summary.Total number of hosts",
+                    "data_path": "action_result.summary.total_number_of_hosts",
                     "data_type": "numeric",
                     "example_values": [
                         9

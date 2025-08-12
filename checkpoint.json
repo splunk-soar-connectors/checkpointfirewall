@@ -18,7 +18,7 @@
     ],
     "logo": "logo_checkpoint.svg",
     "logo_dark": "logo_checkpoint_dark.svg",
-    "python_version": "3",
+    "python_version": "3.9, 3.13",
     "fips_compliant": true,
     "configuration": {
         "url": {

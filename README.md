@@ -1,9 +1,9 @@
 # Check Point Firewall
 
-Publisher: Splunk \
-Connector Version: 2.2.1 \
-Product Vendor: Check Point Software Technologies \
-Product Name: Check Point Firewall \
+Publisher: Splunk <br>
+Connector Version: 2.2.1 <br>
+Product Vendor: Check Point Software Technologies <br>
+Product Name: Check Point Firewall <br>
 Minimum Product Version: 5.1.0
 
 This app supports a variety of endpoint and network based containment actions on Check Point Firewall
@@ -22,27 +22,27 @@ VARIABLE | REQUIRED | TYPE | DESCRIPTION
 
 ### Supported Actions
 
-[test connectivity](#action-test-connectivity) - Validate the asset configuration for connectivity \
-[list policies](#action-list-policies) - List policies \
-[list layers](#action-list-layers) - List access layers \
-[block ip](#action-block-ip) - Block an IP/subnet \
-[unblock ip](#action-unblock-ip) - Unblock an IP/subnet \
-[list hosts](#action-list-hosts) - List hosts \
-[add host](#action-add-host) - Add host \
-[delete host](#action-delete-host) - Delete host \
-[add network](#action-add-network) - Create network object \
-[delete network](#action-delete-network) - Delete network object \
-[update group members](#action-update-group-members) - Update group members \
-[logout session](#action-logout-session) - Logout of an existing session \
-[install policy](#action-install-policy) - Executes the install-policy on a given list of targets \
-[add user](#action-add-user) - Create a new user based on a pre-built template \
+[test connectivity](#action-test-connectivity) - Validate the asset configuration for connectivity <br>
+[list policies](#action-list-policies) - List policies <br>
+[list layers](#action-list-layers) - List access layers <br>
+[block ip](#action-block-ip) - Block an IP/subnet <br>
+[unblock ip](#action-unblock-ip) - Unblock an IP/subnet <br>
+[list hosts](#action-list-hosts) - List hosts <br>
+[add host](#action-add-host) - Add host <br>
+[delete host](#action-delete-host) - Delete host <br>
+[add network](#action-add-network) - Create network object <br>
+[delete network](#action-delete-network) - Delete network object <br>
+[update group members](#action-update-group-members) - Update group members <br>
+[logout session](#action-logout-session) - Logout of an existing session <br>
+[install policy](#action-install-policy) - Executes the install-policy on a given list of targets <br>
+[add user](#action-add-user) - Create a new user based on a pre-built template <br>
 [delete user](#action-delete-user) - Delete existing user
 
 ## action: 'test connectivity'
 
 Validate the asset configuration for connectivity
 
-Type: **test** \
+Type: **test** <br>
 Read only: **True**
 
 This action logs into the device using a REST API call to check the connection and credentials configured.
@@ -59,7 +59,7 @@ No Output
 
 List policies
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -89,7 +89,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 List access layers
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -119,7 +119,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Block an IP/subnet
 
-Type: **contain** \
+Type: **contain** <br>
 Read only: **False**
 
 The <b>ip</b> parameter supports the following formats:<ul><li>Simple IP: For example 123.123.123.123</li><li>IP, Subnet mask: 123.123.0.0 255.255.0.0</li><li>CIDR Notation: 123.123.0.0/16</li></ul>This action takes multiple steps to block an IP/subnet:<ul><li>Log in to the REST endpoint on Check Point to get a session ID.</li><li>Check for an existing network object for the supplied IP/subnet.</li><li>Add the network object if it does not already exist.</li><li>Check for a rule associated with the network object if it already exists.</li><li>Create a rule at the top of the policy that drops all traffic going to the supplied IP/subnet.</li><li>Publish the session.</li><li>Push the changes to the policy's configured firewalls.</li></ul>
@@ -255,7 +255,7 @@ action_result.data.\*.content-direction | string | | any |
 
 Unblock an IP/subnet
 
-Type: **correct** \
+Type: **correct** <br>
 Read only: **False**
 
 The <b>ip</b> parameter supports the following formats:<ul><li>Simple IP: For example 123.123.123.123</li><li>IP, Subnet mask: 123.123.0.0 255.255.0.0</li><li>CIDR Notation: 123.123.0.0/16</li></ul>This action takes multiple steps to unblock an IP/subnet:<ul><li>Log in to the REST endpoint on Check Point to get a session ID.</li><li>Check for an existing network object for the supplied IP/subnet.</li><li>Check for a rule associated with the network object if it exists.</li><li>Delete the rule if it exists.</li><li>Publish the session.</li><li>Push the changes to the policy's configured firewalls.</li></ul>
@@ -286,7 +286,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 List hosts
 
-Type: **correct** \
+Type: **correct** <br>
 Read only: **False**
 
 #### Action Parameters
@@ -319,7 +319,7 @@ action_result.summary.total_number_of_hosts | numeric | | 9 |
 
 Add host
 
-Type: **correct** \
+Type: **correct** <br>
 Read only: **False**
 
 The <b>ip</b> parameter supports the following formats:<ul><li>IPv4: For example 123.123.123.123</li><li>IPv6: For example 2001:0db8:0000:0000:0000:ff00:0042:7879</li></ul>This action will always prioritize using the <b>ip</b> parameter unless <b>ipv4</b> and/or <b>ipv6</b> parameters are specified. If both ipv4 and ipv6 addresses are required, use the corresponding parameters explicitly.
@@ -382,7 +382,7 @@ action_result.data.\*.groups.\*.domain.domain-type | string | | domain |
 
 Delete host
 
-Type: **correct** \
+Type: **correct** <br>
 Read only: **False**
 
 To delete a host, either specify <b>uid</b> or <b>name</b>. If provided both, this action will prioritize the <b>uid</b> parameter.
@@ -411,7 +411,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Create network object
 
-Type: **contain** \
+Type: **contain** <br>
 Read only: **False**
 
 For add a network, You must need to specify one <b>subnet</b> and a <b>subnet mask length</b> or <b>subnet mask</b> parameter.
@@ -487,7 +487,7 @@ action_result.data.\*.groups.\*.domain.domain-type | string | | domain |
 
 Delete network object
 
-Type: **contain** \
+Type: **contain** <br>
 Read only: **False**
 
 To delete a network, either specify <b>uid</b> or <b>name</b>. If provided both, this action will prioritize the <b>uid</b> parameter.
@@ -516,7 +516,7 @@ action_result.parameter.uid | string | `check point network uid` | e1485577-3f1d
 
 Update group members
 
-Type: **generic** \
+Type: **generic** <br>
 Read only: **False**
 
 Either specify <b>uid</b> or <b>name</b>. If provided both, this action will prioritize the <b>uid</b> parameter.
@@ -575,7 +575,7 @@ action_result.data.\*.read-only | boolean | | True |
 
 Logout of an existing session
 
-Type: **correct** \
+Type: **correct** <br>
 Read only: **False**
 
 This action logs out of the current session unless another session ID is specified.
@@ -602,7 +602,7 @@ summary.total_objects_successful | numeric | | 1 0 |
 
 Executes the install-policy on a given list of targets
 
-Type: **generic** \
+Type: **generic** <br>
 Read only: **False**
 
 #### Action Parameters
@@ -631,7 +631,7 @@ action_result.message | string | | Successfully submitted policy installation |
 
 Create a new user based on a pre-built template
 
-Type: **generic** \
+Type: **generic** <br>
 Read only: **False**
 
 #### Action Parameters
@@ -692,7 +692,7 @@ action_result.data.\*.phone-number | string | | 1234567890 |
 
 Delete existing user
 
-Type: **generic** \
+Type: **generic** <br>
 Read only: **False**
 
 Either specify <b>uid</b> or <b>name</b>. If provided both, this action will prioritize the <b>uid</b> parameter.

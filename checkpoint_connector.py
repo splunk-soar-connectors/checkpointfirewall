@@ -20,6 +20,7 @@ import socket
 import struct
 import time
 
+import encryption_helper
 import phantom.app as phantom
 import requests
 import simplejson as json
@@ -56,12 +57,20 @@ class CheckpointConnector(BaseConnector):
         self._base_url = None
         self._headers = None
         self._state = None
+        self._session_token = None
 
     def initialize(self):
         config = self.get_config()
         self._state = self.load_state()
         if self._state.get("sid") and not self._state.get("session_token"):
             self._state["session_token"] = self._state.pop("sid")
+        stored_token = self._state.get("session_token")
+        if stored_token and self._state.get("session_token_encrypted"):
+            try:
+                self._session_token = encryption_helper.decrypt(stored_token, self.get_asset_id())
+            except Exception:
+                self._state.pop("session_token", None)
+                self._state.pop("session_token_encrypted", None)
 
         # Base URL
         base_url = config[phantom.APP_JSON_URL]
@@ -76,8 +85,18 @@ class CheckpointConnector(BaseConnector):
         return phantom.APP_SUCCESS
 
     def finalize(self):
-        self.save_state(self._state)
+        self._save_encrypted_state()
         return phantom.APP_SUCCESS
+
+    def _save_encrypted_state(self):
+        self._state.pop("sid", None)
+        if self._session_token:
+            self._state["session_token"] = encryption_helper.encrypt(self._session_token, self.get_asset_id())
+            self._state["session_token_encrypted"] = True
+        else:
+            self._state.pop("session_token", None)
+            self._state.pop("session_token_encrypted", None)
+        self.save_state(self._state)
 
     def _get_net_size(self, net_mask):
         net_mask = net_mask.split(".")
@@ -189,10 +208,10 @@ class CheckpointConnector(BaseConnector):
         return phantom.APP_SUCCESS, resp_json
 
     def _set_auth_sid(self, action_result):
-        if not self._state.get("session_token"):
+        if not self._session_token:
             auth_status = self._login(action_result)
         else:
-            self._headers["X-chkp-sid"] = self._state.get("session_token")
+            self._headers["X-chkp-sid"] = self._session_token
             ret_val, resp_json = self._make_rest_call("show-session", {}, action_result)
             if not ret_val:
                 auth_status = self._login(action_result)
@@ -219,11 +238,11 @@ class CheckpointConnector(BaseConnector):
         if not ret_val:
             return action_result.get_status()
 
-        self._state["session_token"] = resp_json.get("sid")
+        self._session_token = resp_json.get("sid")
 
-        self._headers["X-chkp-sid"] = self._state.get("session_token")
+        self._headers["X-chkp-sid"] = self._session_token
 
-        self.save_state(self._state)
+        self._save_encrypted_state()
 
         return phantom.APP_SUCCESS
 
@@ -244,13 +263,18 @@ class CheckpointConnector(BaseConnector):
         if not self._set_auth_sid(action_result):
             return action_result.get_status()
 
-        sid_to_logout = param.get("session_id", self._state.get("session_token"))
+        sid_to_logout = param.get("session_id", self._session_token)
 
         self._headers["X-chkp-sid"] = sid_to_logout
 
         ret_val, msg = self._logout(self)
 
-        self._headers["X-chkp-sid"] = self._state.get("session_token")
+        self._headers["X-chkp-sid"] = self._session_token
+
+        if ret_val and sid_to_logout == self._session_token:
+            self._session_token = None
+            self._headers.pop("X-chkp-sid", None)
+            self._save_encrypted_state()
 
         self.save_progress(msg)
 

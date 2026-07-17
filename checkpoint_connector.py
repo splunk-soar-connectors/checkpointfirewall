@@ -60,6 +60,8 @@ class CheckpointConnector(BaseConnector):
     def initialize(self):
         config = self.get_config()
         self._state = self.load_state()
+        if self._state.get("sid") and not self._state.get("session_token"):
+            self._state["session_token"] = self._state.pop("sid")
 
         # Base URL
         base_url = config[phantom.APP_JSON_URL]
@@ -187,10 +189,10 @@ class CheckpointConnector(BaseConnector):
         return phantom.APP_SUCCESS, resp_json
 
     def _set_auth_sid(self, action_result):
-        if not self._state.get("sid"):
+        if not self._state.get("session_token"):
             auth_status = self._login(action_result)
         else:
-            self._headers["X-chkp-sid"] = self._state.get("sid")
+            self._headers["X-chkp-sid"] = self._state.get("session_token")
             ret_val, resp_json = self._make_rest_call("show-session", {}, action_result)
             if not ret_val:
                 auth_status = self._login(action_result)
@@ -217,9 +219,9 @@ class CheckpointConnector(BaseConnector):
         if not ret_val:
             return action_result.get_status()
 
-        self._state["sid"] = resp_json.get("sid")
+        self._state["session_token"] = resp_json.get("sid")
 
-        self._headers["X-chkp-sid"] = self._state.get("sid")
+        self._headers["X-chkp-sid"] = self._state.get("session_token")
 
         self.save_state(self._state)
 
@@ -242,13 +244,13 @@ class CheckpointConnector(BaseConnector):
         if not self._set_auth_sid(action_result):
             return action_result.get_status()
 
-        sid_to_logout = param.get("session_id", self._state.get("sid"))
+        sid_to_logout = param.get("session_id", self._state.get("session_token"))
 
         self._headers["X-chkp-sid"] = sid_to_logout
 
         ret_val, msg = self._logout(self)
 
-        self._headers["X-chkp-sid"] = self._state.get("sid")
+        self._headers["X-chkp-sid"] = self._state.get("session_token")
 
         self.save_progress(msg)
 

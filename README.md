@@ -679,7 +679,6 @@ action_result.data.\*.meta-info.validation-state | string | | ok |
 action_result.data.\*.read-only | boolean | | True |
 action_result.data.\*.encryption.ike | boolean | | True |
 action_result.data.\*.encryption.public-key | boolean | | True |
-action_result.data.\*.encryption.shared-secret | boolean | | False |
 action_result.data.\*.connect-daily | boolean | | True |
 action_result.data.\*.expiration-date.posix | numeric | | 1924885800000 |
 action_result.data.\*.expiration-date.iso-8601 | string | | 2030-12-31T00:00+0530 |

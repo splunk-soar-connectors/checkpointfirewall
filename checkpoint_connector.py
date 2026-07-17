@@ -901,6 +901,10 @@ class CheckpointConnector(BaseConnector):
 
         ret_val, resp_json = self._make_rest_call(endpoint, body, action_result)
 
+        encryption = resp_json.get("encryption") if resp_json else None
+        if isinstance(encryption, dict):
+            encryption.pop("shared-secret", None)
+
         action_result.add_data(resp_json)
 
         if not ret_val and not resp_json:

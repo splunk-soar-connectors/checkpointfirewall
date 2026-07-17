@@ -2929,13 +2929,6 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.encryption.shared-secret",
-                    "data_type": "boolean",
-                    "example_values": [
-                        false
-                    ]
-                },
-                {
                     "data_path": "action_result.data.*.connect-daily",
                     "data_type": "boolean",
                     "example_values": [

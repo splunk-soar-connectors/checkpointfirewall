@@ -693,13 +693,14 @@ class CheckpointConnector(BaseConnector):
         name = param.get("name")
         uid = param.get("uid")
         members = param["members"]
-        action = param["action"]
+        action = str(param["action"]).strip().lower()
+        if action not in {"add", "remove"}:
+            return action_result.set_status(phantom.APP_ERROR, "Action must be either 'add' or 'remove'")
 
         members = [x.strip() for x in members.split(",")]
         members = list(filter(None, members))
         if members:
-            members_object = {action: members} if action in ["add", "remove"] else members
-            members_payload = {"members": members_object}
+            members_payload = {"members": {action: members}}
         else:
             return action_result.set_status(phantom.APP_ERROR, "Please enter valid members")
 

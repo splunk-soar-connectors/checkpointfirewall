@@ -6,3 +6,4 @@
 * - Removed VPN shared secrets from add-user action results before persistence.
 * - Validated update-group-members operations case-insensitively and rejected values that could replace all membership.
 * - Waited for block and unblock policy-installation tasks and failed actions whose tasks time out or do not succeed.
+* - Verified existing block rules are enabled and dropping traffic while scanning paginated and sectioned rulebases.

@@ -346,19 +346,50 @@ class CheckpointConnector(BaseConnector):
 
     def _check_for_rule(self, name, layer, action_result):
         endpoint = "show-access-rulebase"
+        offset = 0
 
-        body = {"name": layer}
+        while True:
+            body = {
+                "name": layer,
+                "details-level": "full",
+                "use-object-dictionary": False,
+                "offset": offset,
+                "limit": 500,
+            }
 
-        ret_val, resp_json = self._make_rest_call(endpoint, body, action_result)
+            ret_val, resp_json = self._make_rest_call(endpoint, body, action_result)
 
-        if not ret_val:
-            return None
+            if not ret_val:
+                return None
 
-        for rule in resp_json.get("rulebase"):
-            if name == rule.get("name"):
-                return True
+            rulebase = resp_json.get("rulebase", [])
+            for rule in self._iter_access_rules(rulebase):
+                if name != rule.get("name"):
+                    continue
+                action = rule.get("action")
+                if isinstance(action, dict):
+                    action = action.get("name")
+                if rule.get("enabled") is True and str(action).casefold() in {"drop", "reject"}:
+                    return True
+                action_result.set_status(
+                    phantom.APP_ERROR,
+                    f"Existing rule '{name}' is disabled or does not block traffic",
+                )
+                return None
 
-        return False
+            page_size = len(rulebase)
+            total = resp_json.get("total", page_size)
+            offset += page_size
+            if not page_size or offset >= total:
+                return False
+
+    def _iter_access_rules(self, entries):
+        for entry in entries:
+            nested = entry.get("rulebase")
+            if isinstance(nested, list):
+                yield from self._iter_access_rules(nested)
+            else:
+                yield entry
 
     def _test_connectivity(self, param):
         # Progress

@@ -281,31 +281,32 @@ class CheckpointConnector(BaseConnector):
         return action_result.set_status(phantom.APP_SUCCESS if ret_val else phantom.APP_ERROR, msg)
 
     def _publish_and_wait(self, action_result):
-        MAX_ITER = 10
-        SLEEP_TIME = 6
-
         ret_val, resp_json = self._make_rest_call("publish", {}, action_result)
 
         if not ret_val and not resp_json:
             return action_result.get_status()
 
-        task_id = resp_json.get("task-id")
+        return self._wait_for_task(resp_json.get("task-id"), action_result)
 
-        count = 0
-        while True:
-            if count >= MAX_ITER:
-                return False
+    def _wait_for_task(self, task_id, action_result, max_attempts=10):
+        if not task_id:
+            return False
 
-            time.sleep(SLEEP_TIME)
-            count += 1
+        for _ in range(max_attempts):
+            time.sleep(6)
 
             ret_val, resp_json = self._make_rest_call("show-task", {"task-id": task_id}, action_result)
 
             if not ret_val and not resp_json:
                 continue
 
-            if resp_json.get("tasks", [{}])[0].get("status") == "succeeded":
+            status = resp_json.get("tasks", [{}])[0].get("status")
+            if status == "succeeded":
                 return True
+            if status in {"failed", "partially succeeded"}:
+                return False
+
+        return False
 
     def _check_for_object(self, name, ip, length, action_result):
         endpoint = "show-hosts"
@@ -512,6 +513,8 @@ class CheckpointConnector(BaseConnector):
 
             if not ret_val and not resp_json:
                 return action_result.get_status()
+            if not self._wait_for_task(resp_json.get("task-id"), action_result, max_attempts=100):
+                return action_result.set_status(phantom.APP_ERROR, "Policy installation did not succeed")
 
         self.save_progress("Successfully blocked {}".format("subnet" if length != "32" else "IP"))
 
@@ -557,6 +560,8 @@ class CheckpointConnector(BaseConnector):
 
         if not ret_val and not resp_json:
             return action_result.get_status()
+        if not self._wait_for_task(resp_json.get("task-id"), action_result, max_attempts=100):
+            return action_result.set_status(phantom.APP_ERROR, "Policy installation did not succeed")
 
         self.save_progress("Successfully unblocked {}".format("subnet" if length != "32" else "IP"))
 

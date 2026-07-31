@@ -5,7 +5,7 @@
     "publisher": "Splunk",
     "package_name": "phantom_checkpoint",
     "type": "firewall",
-    "license": "Copyright (c) 2017-2025 Splunk Inc.",
+    "license": "Copyright (c) 2017-2026 Splunk Inc.",
     "main_module": "checkpoint_connector.py",
     "app_version": "2.2.2",
     "utctime_updated": "2025-09-05T19:35:30.348489Z",
@@ -31,7 +31,7 @@
             "data_type": "boolean",
             "description": "Verify server certificate",
             "order": 1,
-            "default": false
+            "default": true
         },
         "username": {
             "description": "Username",
@@ -2926,13 +2926,6 @@
                     "data_type": "boolean",
                     "example_values": [
                         true
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.encryption.shared-secret",
-                    "data_type": "boolean",
-                    "example_values": [
-                        false
                     ]
                 },
                 {

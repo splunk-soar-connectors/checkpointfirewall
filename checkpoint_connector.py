@@ -1,6 +1,6 @@
 # File: checkpoint_connector.py
 #
-# Copyright (c) 2017-2025 Splunk Inc.
+# Copyright (c) 2017-2026 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import socket
 import struct
 import time
 
+import encryption_helper
 import phantom.app as phantom
 import requests
 import simplejson as json
@@ -56,10 +57,20 @@ class CheckpointConnector(BaseConnector):
         self._base_url = None
         self._headers = None
         self._state = None
+        self._session_token = None
 
     def initialize(self):
         config = self.get_config()
         self._state = self.load_state()
+        if self._state.get("sid") and not self._state.get("session_token"):
+            self._state["session_token"] = self._state.pop("sid")
+        stored_token = self._state.get("session_token")
+        if stored_token and self._state.get("session_token_encrypted"):
+            try:
+                self._session_token = encryption_helper.decrypt(stored_token, self.get_asset_id())
+            except Exception:
+                self._state.pop("session_token", None)
+                self._state.pop("session_token_encrypted", None)
 
         # Base URL
         base_url = config[phantom.APP_JSON_URL]
@@ -74,8 +85,18 @@ class CheckpointConnector(BaseConnector):
         return phantom.APP_SUCCESS
 
     def finalize(self):
-        self.save_state(self._state)
+        self._save_encrypted_state()
         return phantom.APP_SUCCESS
+
+    def _save_encrypted_state(self):
+        self._state.pop("sid", None)
+        if self._session_token:
+            self._state["session_token"] = encryption_helper.encrypt(self._session_token, self.get_asset_id())
+            self._state["session_token_encrypted"] = True
+        else:
+            self._state.pop("session_token", None)
+            self._state.pop("session_token_encrypted", None)
+        self.save_state(self._state)
 
     def _get_net_size(self, net_mask):
         net_mask = net_mask.split(".")
@@ -187,10 +208,10 @@ class CheckpointConnector(BaseConnector):
         return phantom.APP_SUCCESS, resp_json
 
     def _set_auth_sid(self, action_result):
-        if not self._state.get("sid"):
+        if not self._session_token:
             auth_status = self._login(action_result)
         else:
-            self._headers["X-chkp-sid"] = self._state.get("sid")
+            self._headers["X-chkp-sid"] = self._session_token
             ret_val, resp_json = self._make_rest_call("show-session", {}, action_result)
             if not ret_val:
                 auth_status = self._login(action_result)
@@ -217,11 +238,11 @@ class CheckpointConnector(BaseConnector):
         if not ret_val:
             return action_result.get_status()
 
-        self._state["sid"] = resp_json.get("sid")
+        self._session_token = resp_json.get("sid")
 
-        self._headers["X-chkp-sid"] = self._state.get("sid")
+        self._headers["X-chkp-sid"] = self._session_token
 
-        self.save_state(self._state)
+        self._save_encrypted_state()
 
         return phantom.APP_SUCCESS
 
@@ -242,44 +263,50 @@ class CheckpointConnector(BaseConnector):
         if not self._set_auth_sid(action_result):
             return action_result.get_status()
 
-        sid_to_logout = param.get("session_id", self._state.get("sid"))
+        sid_to_logout = param.get("session_id", self._session_token)
 
         self._headers["X-chkp-sid"] = sid_to_logout
 
         ret_val, msg = self._logout(self)
 
-        self._headers["X-chkp-sid"] = self._state.get("sid")
+        self._headers["X-chkp-sid"] = self._session_token
+
+        if ret_val and sid_to_logout == self._session_token:
+            self._session_token = None
+            self._headers.pop("X-chkp-sid", None)
+            self._save_encrypted_state()
 
         self.save_progress(msg)
 
         return action_result.set_status(phantom.APP_SUCCESS if ret_val else phantom.APP_ERROR, msg)
 
     def _publish_and_wait(self, action_result):
-        MAX_ITER = 10
-        SLEEP_TIME = 6
-
         ret_val, resp_json = self._make_rest_call("publish", {}, action_result)
 
         if not ret_val and not resp_json:
             return action_result.get_status()
 
-        task_id = resp_json.get("task-id")
+        return self._wait_for_task(resp_json.get("task-id"), action_result)
 
-        count = 0
-        while True:
-            if count >= MAX_ITER:
-                return False
+    def _wait_for_task(self, task_id, action_result, max_attempts=10):
+        if not task_id:
+            return False
 
-            time.sleep(SLEEP_TIME)
-            count += 1
+        for _ in range(max_attempts):
+            time.sleep(6)
 
             ret_val, resp_json = self._make_rest_call("show-task", {"task-id": task_id}, action_result)
 
             if not ret_val and not resp_json:
                 continue
 
-            if resp_json.get("tasks", [{}])[0].get("status") == "succeeded":
+            status = resp_json.get("tasks", [{}])[0].get("status")
+            if status == "succeeded":
                 return True
+            if status in {"failed", "partially succeeded"}:
+                return False
+
+        return False
 
     def _check_for_object(self, name, ip, length, action_result):
         endpoint = "show-hosts"
@@ -319,19 +346,50 @@ class CheckpointConnector(BaseConnector):
 
     def _check_for_rule(self, name, layer, action_result):
         endpoint = "show-access-rulebase"
+        offset = 0
 
-        body = {"name": layer}
+        while True:
+            body = {
+                "name": layer,
+                "details-level": "full",
+                "use-object-dictionary": False,
+                "offset": offset,
+                "limit": 500,
+            }
 
-        ret_val, resp_json = self._make_rest_call(endpoint, body, action_result)
+            ret_val, resp_json = self._make_rest_call(endpoint, body, action_result)
 
-        if not ret_val:
-            return None
+            if not ret_val:
+                return None
 
-        for rule in resp_json.get("rulebase"):
-            if name == rule.get("name"):
-                return True
+            rulebase = resp_json.get("rulebase", [])
+            for rule in self._iter_access_rules(rulebase):
+                if name != rule.get("name"):
+                    continue
+                action = rule.get("action")
+                if isinstance(action, dict):
+                    action = action.get("name")
+                if rule.get("enabled") is True and str(action).casefold() in {"drop", "reject"}:
+                    return True
+                action_result.set_status(
+                    phantom.APP_ERROR,
+                    f"Existing rule '{name}' is disabled or does not block traffic",
+                )
+                return None
 
-        return False
+            page_size = len(rulebase)
+            total = resp_json.get("total", page_size)
+            offset += page_size
+            if not page_size or offset >= total:
+                return False
+
+    def _iter_access_rules(self, entries):
+        for entry in entries:
+            nested = entry.get("rulebase")
+            if isinstance(nested, list):
+                yield from self._iter_access_rules(nested)
+            else:
+                yield entry
 
     def _test_connectivity(self, param):
         # Progress
@@ -486,6 +544,8 @@ class CheckpointConnector(BaseConnector):
 
             if not ret_val and not resp_json:
                 return action_result.get_status()
+            if not self._wait_for_task(resp_json.get("task-id"), action_result, max_attempts=100):
+                return action_result.set_status(phantom.APP_ERROR, "Policy installation did not succeed")
 
         self.save_progress("Successfully blocked {}".format("subnet" if length != "32" else "IP"))
 
@@ -531,6 +591,8 @@ class CheckpointConnector(BaseConnector):
 
         if not ret_val and not resp_json:
             return action_result.get_status()
+        if not self._wait_for_task(resp_json.get("task-id"), action_result, max_attempts=100):
+            return action_result.set_status(phantom.APP_ERROR, "Policy installation did not succeed")
 
         self.save_progress("Successfully unblocked {}".format("subnet" if length != "32" else "IP"))
 
@@ -667,13 +729,14 @@ class CheckpointConnector(BaseConnector):
         name = param.get("name")
         uid = param.get("uid")
         members = param["members"]
-        action = param["action"]
+        action = str(param["action"]).strip().lower()
+        if action not in {"add", "remove"}:
+            return action_result.set_status(phantom.APP_ERROR, "Action must be either 'add' or 'remove'")
 
         members = [x.strip() for x in members.split(",")]
         members = list(filter(None, members))
         if members:
-            members_object = {action: members} if action in ["add", "remove"] else members
-            members_payload = {"members": members_object}
+            members_payload = {"members": {action: members}}
         else:
             return action_result.set_status(phantom.APP_ERROR, "Please enter valid members")
 
@@ -874,6 +937,10 @@ class CheckpointConnector(BaseConnector):
             body["comments"] = comments
 
         ret_val, resp_json = self._make_rest_call(endpoint, body, action_result)
+
+        encryption = resp_json.get("encryption") if resp_json else None
+        if isinstance(encryption, dict):
+            encryption.pop("shared-secret", None)
 
         action_result.add_data(resp_json)
 

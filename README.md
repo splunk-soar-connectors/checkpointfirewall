@@ -1,7 +1,7 @@
 # Check Point Firewall
 
 Publisher: Splunk <br>
-Connector Version: 2.2.2 <br>
+Connector Version: 3.0.0 <br>
 Product Vendor: Check Point Software Technologies <br>
 Product Name: Check Point Firewall <br>
 Minimum Product Version: 5.1.0

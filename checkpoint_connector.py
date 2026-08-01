@@ -177,7 +177,7 @@ class CheckpointConnector(BaseConnector):
                 url,
                 data=json.dumps(body),
                 headers=self._headers,
-                verify=config[phantom.APP_JSON_VERIFY],
+                verify=not config.get("allow_insecure_connection", False),
                 timeout=CHECKPOINT_DEFAULT_REQUEST_TIMEOUT,
             )
         except Exception as e:

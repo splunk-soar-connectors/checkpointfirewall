@@ -15,7 +15,7 @@ This table lists the configuration variables required to operate Check Point Fir
 VARIABLE | REQUIRED | TYPE | DESCRIPTION
 -------- | -------- | ---- | -----------
 **url** | required | string | Management Server URL with port (e.g. https://10.10.10.10:443) |
-**verify_server_cert** | optional | boolean | Verify server certificate |
+**allow_insecure_connection** | optional | boolean | Allow an insecure connection without verifying the server certificate. Enabling this option is not recommended. |
 **username** | required | string | Username |
 **password** | required | password | Password |
 **domain** | optional | string | Domain |

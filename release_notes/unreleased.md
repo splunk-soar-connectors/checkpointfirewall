@@ -1,3 +1,1 @@
 **Unreleased**
-
-* Replaced the legacy certificate-verification setting with an explicit insecure-connection opt-out. Existing assets must explicitly enable the new option if they cannot verify the server certificate.

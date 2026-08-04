@@ -27,11 +27,11 @@
             "required": true,
             "order": 0
         },
-        "verify_server_cert": {
+        "allow_insecure_connection": {
             "data_type": "boolean",
-            "description": "Verify server certificate",
+            "description": "Allow an insecure connection without verifying the server certificate. Enabling this option is not recommended.",
             "order": 1,
-            "default": true
+            "default": false
         },
         "username": {
             "description": "Username",
